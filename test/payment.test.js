@@ -130,10 +130,27 @@ test("pilihan minuman divalidasi di server", () => {
 
 test("setiap kategori punya 6 sampai 10 menu", async () => {
   const { categories, products } = require("../lib/catalog");
-  for (const category of categories) {
+  for (const category of categories.filter((item) => item.id !== "beans")) {
     const count = products.filter((item) => item.category === category.id).length;
     assert.ok(count >= 6 && count <= 10, `${category.name}: ${count} menu`);
   }
+});
+
+test("35 biji kopi, masing-masing dengan sangrai, catatan rasa, dan foto sendiri", () => {
+  const { products } = require("../lib/catalog");
+  const beans = products.filter((item) => item.category === "beans");
+  assert.equal(beans.length, 35);
+  for (const bean of beans) {
+    assert.match(bean.roast, /^Sangrai (terang|sedang|sedang-gelap|gelap)$/, bean.name);
+    assert.ok(bean.notes && bean.description.includes(bean.notes), bean.name);
+  }
+  // Foto biji kopi tidak dipakai dua kali, termasuk oleh menu lain.
+  const beanPhotos = beans.map((bean) => bean.credit.url);
+  assert.equal(new Set(beanPhotos).size, beans.length, "ada foto biji kopi yang dipakai dua kali");
+  const otherPhotos = new Set(
+    products.filter((item) => item.category !== "beans" && item.credit).map((item) => item.credit.url),
+  );
+  for (const bean of beans) assert.ok(!otherPhotos.has(bean.credit.url), `${bean.name}: foto sudah dipakai menu lain`);
 });
 
 test("setiap menu dan biji kopi punya rating 1 sampai 5", () => {

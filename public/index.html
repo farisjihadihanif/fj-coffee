@@ -303,7 +303,7 @@
       <p>Kemasan 200 gram, digiling sesuai permintaan saat diambil di kasir. Minuman dan makanan ada di <a href="menu.html">halaman menu</a>.</p>
 
       <div class="row">
-        <template x-for="item in $store.menu.beans" :key="item.id">
+        <template x-for="item in $store.menu.featuredBeans" :key="item.id">
           <div class="product-card-wrapper">
             <div
               class="product-card"
@@ -344,6 +344,8 @@
             </div>
             <div class="product-content">
               <h3 x-text="item.name"></h3>
+              <p class="product-roast" x-text="item.roast"></p>
+              <p class="product-notes" x-text="item.notes"></p>
               <div class="product-stars" role="img" :aria-label="`Rating ${ratingText(item.rating)} dari 5`">
                 <template x-for="star in 5" :key="star">
                   <span class="star" aria-hidden="true">
@@ -372,6 +374,10 @@
           </div>
         </template>
       </div>
+      <a href="menu.html?kategori=beans" class="products-more" x-show="$store.menu.status === 'ready'">
+        Lihat semua biji kopi
+        <span class="products-more-count" x-text="$store.menu.items.filter((item) => item.category === 'beans').length"></span>
+      </a>
     </section>
     <!-- Produk Section End -->
 

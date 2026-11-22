@@ -316,18 +316,48 @@ def temperatures_for(pid, cat):
     if cat == "frappe":
         return ["iced"]
     return TEMPERATURES.get(pid, ["hot", "iced"])
-# Biji kopi 200 g: (id, nama, harga, rating).
+# Tingkat sangrai biji kopi.
+ROASTS = {"light": "Sangrai terang", "medium": "Sangrai sedang", "medium-dark": "Sangrai sedang-gelap", "dark": "Sangrai gelap"}
+
+# Biji kopi 200 g: (id, nama, harga, rating, sangrai, catatan rasa).
+# Urutan di sini adalah urutan tampil; sembilan pertama tampil di halaman
+# utama (3x3), semuanya tampil di kategori Biji Kopi di halaman menu.
 BEANS = [
-    (1, "Robusta Brazil", 45000, 4.5),
-    (2, "America Blend", 75000, 5.0),
-    (3, "Primo Passo", 100000, 4.6),
-    (4, "Aceh Gayo", 150000, 4.7),
-    (5, "Sumatra Mandailing", 90000, 4.3),
-    (6, "Toraja Sapan", 120000, 4.6),
-    (7, "Kintamani Bali", 115000, 4.6),
-    (8, "Flores Bajawa", 105000, 4.5),
-    (9, "Java Preanger", 95000, 4.4),
-    (10, "Wamena Papua", 140000, 4.8),
+    (4, "Aceh Gayo", 150000, 4.7, "medium", "Rempah, cokelat hitam, dan asam buah yang lembut."),
+    (6, "Toraja Sapan", 120000, 4.6, "medium-dark", "Body tebal, rempah, dan pahit cokelat di akhir."),
+    (7, "Kintamani Bali", 115000, 4.6, "light", "Segar seperti jeruk, dengan manis gula merah."),
+    (10, "Wamena Papua", 140000, 4.8, "medium", "Cokelat, kacang, dan rasa manis yang bersih."),
+    (5, "Sumatra Mandailing", 90000, 4.3, "dark", "Herbal dan rasa tanah, body berat, asam rendah."),
+    (8, "Flores Bajawa", 105000, 4.5, "medium", "Cokelat, vanila, dan sedikit kayu manis."),
+    (9, "Java Preanger", 95000, 4.4, "medium", "Manis karamel, asam seimbang, akhir yang bersih."),
+    (13, "Kerinci Jambi", 110000, 4.6, "light", "Buah merah, teh hitam, dan madu."),
+    (17, "Robusta Temanggung", 65000, 4.4, "dark", "Cokelat pahit, kacang panggang, dan aroma tembakau."),
+    (11, "Lintong Nihuta", 120000, 4.5, "medium", "Lada, cokelat, dan asam jeruk nipis."),
+    (19, "Toraja Kalosi", 125000, 4.7, "medium", "Buah kering, rempah, dan body seperti sirup."),
+    (20, "Enrekang Latimojong", 130000, 4.6, "light", "Buah beri, gula tebu, dan asam yang cerah."),
+    (16, "Ijen Raung", 115000, 4.6, "medium", "Jeruk, gula aren, dan sedikit rasa bunga."),
+    (23, "Gunung Puntang", 125000, 4.7, "light", "Bunga, jeruk manis, dan madu."),
+    (22, "Java Malabar", 100000, 4.5, "medium", "Nangka, gula aren, dan asam yang lembut."),
+    (31, "Gunung Halu", 120000, 4.6, "medium", "Buah merah, karamel, dan manis yang bertahan lama."),
+    (25, "Sindoro Kledung", 110000, 4.5, "medium", "Tembakau manis, cokelat, dan asam apel."),
+    (32, "Merapi Jogja", 95000, 4.4, "medium-dark", "Cokelat, kayu manis, dan rasa tanah vulkanik."),
+    (30, "Solok Minang", 115000, 4.6, "light", "Markisa, gula aren, dan teh."),
+    (28, "Simalungun", 110000, 4.5, "medium", "Cokelat, rempah hangat, dan asam buah tropis."),
+    (21, "Flores Manggarai", 105000, 4.4, "medium", "Kacang, cokelat, dan akhir yang manis."),
+    (27, "Tambora Sumbawa", 95000, 4.3, "medium", "Rempah, gula merah, dan rasa tanah yang ringan."),
+    (35, "Mamasa Sulawesi", 125000, 4.5, "medium", "Jeruk, cokelat, dan rempah tipis."),
+    (33, "Moanemani Papua", 145000, 4.7, "medium", "Cokelat susu, karamel, dan rempah lembut."),
+    (34, "Pinogu Gorontalo", 170000, 4.8, "light", "Buah tropis, bunga melati, dan manis madu."),
+    (12, "Robusta Sidikalang", 60000, 4.4, "dark", "Pahit tegas, rasa tanah, dan cokelat pekat."),
+    (14, "Robusta Semendo", 55000, 4.3, "dark", "Cokelat hitam dan kayu, body padat."),
+    (15, "Robusta Lampung", 50000, 4.2, "dark", "Pahit klasik kopi tubruk dengan aroma kacang."),
+    (18, "Robusta Dampit", 55000, 4.3, "medium-dark", "Cokelat, karamel gosong, dan rempah ringan."),
+    (24, "Robusta Pagar Alam", 60000, 4.3, "dark", "Cokelat pahit, kayu manis, dan body tebal."),
+    (26, "Robusta Bali Pupuan", 65000, 4.4, "medium-dark", "Cokelat susu dan kacang, pahitnya ramah."),
+    (29, "Robusta Kepahiang", 55000, 4.2, "dark", "Pahit pekat dengan aroma kacang panggang."),
+    (1, "Robusta Brazil", 45000, 4.5, "dark", "Kacang panggang dan cokelat pahit, body tebal."),
+    (2, "America Blend", 75000, 5.0, "medium-dark", "Karamel dan cokelat susu, cocok untuk kopi susu."),
+    (3, "Primo Passo", 100000, 4.6, "medium", "Gula merah dan kacang, rasanya bulat dan lembut."),
 ]
 
 MENU_IMG_DIR = os.path.join(ROOT, "public", "img", "menu")
@@ -433,10 +463,11 @@ def main():
         if pid not in RATINGS:
             raise SystemExit(f"menu {pid} ({name}) belum punya rating di RATINGS")
         lines.append(f'  {{ id: {pid}, category: "{cat}", name: {json.dumps(name)}, img: "{img}", price: {price}, rating: {RATINGS[pid]}, description: {json.dumps(desc, ensure_ascii=False)}{opts}{credit_js(credit)} }},')
-    for pid, name, price, rating in BEANS:
+    for pid, name, price, rating, roast, note in BEANS:
         img, credit = image_for("beans-" + slugify(name), name)
         credit_entries.append(("beans", name, credit))
-        lines.append(f'  {{ id: {pid}, category: "beans", name: "{name}", img: "{img}", price: {price}, rating: {rating}, description: "Biji kopi 200 g."{credit_js(credit)} }},')
+        desc = f"{note} {ROASTS[roast]}, 200 g."
+        lines.append(f'  {{ id: {pid}, category: "beans", name: "{name}", img: "{img}", price: {price}, rating: {rating}, roast: {json.dumps(ROASTS[roast])}, notes: {json.dumps(note, ensure_ascii=False)}, description: {json.dumps(desc, ensure_ascii=False)}{credit_js(credit)} }},')
     cats = "\n".join(f'  {{ id: "{c}", name: "{n}" }},' for c, n in CATEGORIES)
     js = f"""// Katalog menu FJ Coffee. Ini satu-satunya sumber harga: browser hanya
 // mengirim id, jumlah, dan pilihan minuman, lalu server menghitung total dari
@@ -447,7 +478,8 @@ def main():
 // mengganti harga. img adalah path di dalam public/img/; credit berisi
 // pemilik foto dan sumbernya (ditampilkan di public/credits.html); rating
 // adalah nilai bintang 1-5 yang tampil di kartu menu. Menu minuman punya
-// options.temperature: suhu yang bisa dipilih.
+// options.temperature: suhu yang bisa dipilih. Biji kopi punya roast
+// (tingkat sangrai) dan notes (catatan rasa).
 const categories = [
 {cats}
 ];

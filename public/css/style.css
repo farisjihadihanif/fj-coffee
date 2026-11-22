@@ -927,11 +927,20 @@ dialog.modal::backdrop {
 }
 
 /* Product Section */
+/* Sembilan biji kopi: tiga kolom supaya rapi 3x3, satu kolom di ponsel. */
 .products .row {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2rem;
-  margin-top: 5rem;
+  max-width: 1100px;
+  margin: 5rem auto 0;
+}
+
+@media (max-width: 699px) {
+  .products .row {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 420px;
+  }
 }
 
 .products .product-card {
@@ -1000,12 +1009,79 @@ dialog.modal::backdrop {
 }
 
 .products .product-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   padding: 1.6rem 1.6rem 2rem;
+}
+
+/* Bintang dan harga rata bawah walau nama atau catatan rasa dua baris. */
+.products .product-content .product-stars {
+  margin-top: auto;
 }
 
 .products .product-content h3 {
   font-size: 2rem;
   color: #fff;
+}
+
+/* Tingkat sangrai dan catatan rasa di kartu biji kopi. */
+.products .product-content .product-roast {
+  display: inline-block;
+  margin: 8px auto 0;
+  padding: 2px 10px;
+  border: 1px solid rgba(182, 137, 91, 0.45);
+  border-radius: 999px;
+  color: var(--primary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.products .product-content .product-notes {
+  max-width: 30ch;
+  margin: 8px auto 0;
+  color: #d9cbb5;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* Tautan ke semua biji kopi di halaman menu, di bawah grid 3x3. */
+.products .products-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: fit-content;
+  min-height: 44px;
+  margin: 32px auto 0;
+  padding: 10px 22px;
+  border: 1px solid var(--primary);
+  border-radius: 999px;
+  color: var(--primary);
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.products .products-more:hover {
+  background: var(--primary);
+  color: var(--bg);
+}
+
+.products .products-more-count {
+  display: inline-grid;
+  min-width: 28px;
+  height: 24px;
+  padding: 0 6px;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(182, 137, 91, 0.2);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.products .products-more:hover .products-more-count {
+  background: rgba(1, 1, 1, 0.2);
 }
 
 .products .product-stars {

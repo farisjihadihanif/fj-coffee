@@ -28,7 +28,8 @@ document.addEventListener("alpine:init", () => {
     drinkOptions: null,
     // Kata kunci bisa datang dari halaman lain lewat menu.html?q=...
     query: new URLSearchParams(window.location.search).get("q") || "",
-    activeCategory: "all",
+    // Kategori awal bisa dipilih lewat menu.html?kategori=beans.
+    activeCategory: new URLSearchParams(window.location.search).get("kategori") || "all",
     status: "loading", // loading | ready | error
     async load() {
       this.status = "loading";
@@ -39,6 +40,9 @@ document.addEventListener("alpine:init", () => {
         this.categories = data.categories;
         this.items = data.products;
         this.drinkOptions = data.drinkOptions;
+        if (!this.categories.some((category) => category.id === this.activeCategory)) {
+          this.activeCategory = "all";
+        }
         this.status = "ready";
         Alpine.store("cart").syncWithCatalog(this.items);
       } catch (error) {
@@ -49,10 +53,9 @@ document.addEventListener("alpine:init", () => {
       const query = this.query.trim().toLowerCase();
       return !query || item.name.toLowerCase().includes(query);
     },
-    // Menu minuman dan makanan (semua selain biji kopi), dikelompokkan per kategori.
+    // Semua menu, termasuk biji kopi, dikelompokkan per kategori.
     get groups() {
       return this.categories
-        .filter((category) => category.id !== "beans")
         .filter(
           (category) =>
             this.activeCategory === "all" || this.activeCategory === category.id,
@@ -104,6 +107,10 @@ document.addEventListener("alpine:init", () => {
       return this.items.filter(
         (item) => item.category === "beans" && this.matches(item),
       );
+    },
+    // Sembilan biji kopi pertama untuk halaman utama (grid 3x3).
+    get featuredBeans() {
+      return this.beans.slice(0, 9);
     },
   });
 
@@ -304,7 +311,7 @@ document.addEventListener("alpine:init", () => {
       const menu = Alpine.store("menu");
       const count = (id) =>
         menu.items.filter((item) => item.category === id && menu.matches(item)).length;
-      const categories = menu.categories.filter((category) => category.id !== "beans");
+      const categories = menu.categories;
       return [
         {
           id: "all",
