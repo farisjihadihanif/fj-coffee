@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FJ Coffee | Pesan dari meja, bayar online</title>
+    <meta
+      name="description"
+      content="FJ Coffee: lihat menu, pesan dari meja atau untuk dibawa pulang, lalu bayar lewat QRIS, GoPay, atau transfer bank."
+    />
+
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,300;0,400;0,700;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Feather Icons -->
+    <script
+      src="https://unpkg.com/feather-icons@4.29.2/dist/feather.min.js"
+      integrity="sha384-qEqAs1VsN9WH2myXDbiP2wGGIttL9bMRZBKCl54ZnzpDlVqbYANP9vMaoT/wvQcf"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Style -->
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png" />
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+    <link rel="stylesheet" href="css/style.css" />
+
+    <!-- AlpineJS -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.5/dist/cdn.min.js"
+      integrity="sha384-FYLKjwG3aohNhNZoVG8sY/5ntunm+MqylL90Q+rT3OM7AwV9/BKFjk/RjoIpIgsI"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- App -->
+    <script src="src/app.js"></script>
+  </head>
+  <body>
+    <!-- Navbar Start -->
+    <nav class="navbar" x-data>
+      <a href="index.html" class="navbar-logo"><img src="img/logo.png" alt="" width="40" height="40" />FJ<span>coffee</span>.</a>
+
+      <div class="navbar-nav">
+        <a href="#"> Home </a>
+        <a href="#about"> Tentang Kami </a>
+        <a href="menu.html"> Menu </a>
+        <a href="#products"> Biji Kopi </a>
+        <a href="#contact"> Kontak </a>
+      </div>
+
+      <div class="navbar-extra">
+        <a href="#" id="search-button">
+          <i data-feather="search"></i>
+        </a>
+        <a href="#" id="shopping-cart-button">
+          <i data-feather="shopping-cart"></i>
+          <span class="quantity-badge" x-show="$store.cart.quantity" x-text="$store.cart.quantity"></span>
+        </a>
+        <a href="#" id="humburger-menu">
+          <i data-feather="menu"></i>
+        </a>
+      </div>
+
+      <!-- Search form Start -->
+      <div class="search-form">
+        <input type="search" id="search-box" placeholder="Cari menu..." aria-label="Cari menu" x-model="$store.menu.query" />
+        <label for="search-box"><i data-feather="search"></i></label>
+      </div>
+      <!-- Search form End -->
+
+      <!-- shopping cart start -->
+      <div class="shopping-cart">
+        <template x-for ="(item, index) in $store.cart.items" :key="index">
+          <div class="cart-item">
+            <img x-show="item.img" :src="item.img ? `img/${item.img}` : ''" :alt="item.name" />
+            <span class="cart-thumb" x-show="!item.img" x-text="item.name.charAt(0)" aria-hidden="true"></span>
+            <div class="cart-product-info">
+              <h3 x-text="item.name"></h3>
+            </div>
+            <div class="cart-column cart-price">
+              <strong x-text="rupiah(item.price)"></strong>
+            </div>
+            <div class="cart-column cart-quantity">
+              <div class="quantity-controls">
+                <button type="button" aria-label="Kurangi quantity" title="Kurangi quantity" @click.stop="$store.cart.remove(item.id)">
+                  <span class="cart-action-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <use href="img/feather-sprite.svg#shopping-cart" />
+                    </svg>
+                    <svg viewBox="0 0 24 24" class="cart-action-symbol" aria-hidden="true">
+                      <use href="img/feather-sprite.svg#minus" />
+                    </svg>
+                  </span>
+                </button>
+                <strong x-text="item.quantity"></strong>
+                <button type="button" aria-label="Tambah quantity" title="Tambah quantity" @click.stop="$store.cart.add(item)" :disabled="item.quantity >= 20">
+                  <span class="cart-action-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <use href="img/feather-sprite.svg#shopping-cart" />
+                    </svg>
+                    <svg viewBox="0 0 24 24" class="cart-action-symbol" aria-hidden="true">
+                      <use href="img/feather-sprite.svg#plus" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+            </div>
+            <div class="cart-column cart-total">
+              <strong x-text="rupiah(item.price * item.quantity)"></strong>
+            </div>
+            <button type="button" class="remove-cart-item" aria-label="Hapus produk" title="Hapus produk" @click.stop="$store.cart.removeAll(item.id)">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <use href="img/feather-sprite.svg#trash-2" />
+              </svg>
+            </button>
+          </div>
+        </template>
+        <div class="empty-cart" x-show="!$store.cart.items.length">
+          <svg class="empty-cart-icon" width="72" height="72" viewBox="0 0 24 24" role="img" aria-label="Keranjang kosong">
+            <use href="img/feather-sprite.svg#shopping-cart" />
+          </svg>
+          <h3>Keranjang masih kosong</h3>
+          <a href="menu.html" class="continue-shopping">Lihat menu</a>
+        </div>
+        <div class="payment-details" x-show="$store.cart.items.length">
+          <h3>Rincian Pembayaran</h3>
+          <div class="payment-row"><span>Subtotal</span><strong x-text="rupiah($store.cart.total)"></strong></div>
+          <div class="payment-row"><span x-text="`Pajak resto ${Math.round($store.config.taxRate * 100)}%`"></span><strong x-text="rupiah($store.cart.tax)"></strong></div>
+          <div class="payment-grand-total">
+            <span>Total</span>
+            <strong x-text="rupiah($store.cart.grandTotal)"></strong>
+          </div>
+          <button type="button" class="checkout-button" id="open-checkout-button">Pesan sekarang</button>
+        </div>
+      </div>
+      <!-- shopping cart end -->
+    </nav>
+    <!-- Navbar End -->
+
+    <!-- Checkout Modal Start -->
+    <div class="payment-notification" id="payment-notification" role="status" aria-live="polite"></div>
+    <div class="checkout-modal" id="checkout-modal" aria-hidden="true">
+      <div class="checkout-modal-container" x-data data-keep-cart>
+        <button type="button" class="checkout-close" aria-label="Tutup checkout">
+          <i data-feather="x"></i>
+        </button>
+        <div class="form-container">
+          <form action="" id="checkoutForm">
+            <h5>Data Pemesan</h5>
+
+            <label for="name">
+              <span>Nama</span>
+              <input type="text" id="name" name="name" placeholder="Nama pemesan" maxlength="60" autocomplete="name" required />
+            </label>
+
+            <label for="phone">
+              <span>No. HP</span>
+              <input type="tel" id="phone" name="phone" placeholder="08xxxxxxxxxx" pattern="\+?[0-9\s\-]{8,18}" autocomplete="tel" required />
+            </label>
+
+            <label for="email">
+              <span>Email</span>
+              <input type="email" id="email" name="email" placeholder="Opsional, untuk bukti bayar" autocomplete="email" />
+            </label>
+
+            <fieldset class="order-type">
+              <legend>Jenis pesanan</legend>
+              <label><input type="radio" name="orderType" value="dine-in" checked /> Makan di tempat</label>
+              <label><input type="radio" name="orderType" value="takeaway" /> Bawa pulang</label>
+            </fieldset>
+
+            <label for="tableNumber" id="table-field">
+              <span>No. meja</span>
+              <input type="number" id="tableNumber" name="tableNumber" placeholder="Lihat nomor di meja" min="1" :max="$store.config.maxTableNumber" inputmode="numeric" required />
+            </label>
+
+            <label for="note">
+              <span>Catatan</span>
+              <input type="text" id="note" name="note" placeholder="Opsional, misalnya kurangi gula" maxlength="140" />
+            </label>
+
+            <p class="payment-unavailable" x-show="!$store.config.paymentReady">
+              Pembayaran belum dikonfigurasi di server ini, jadi pesanan belum bisa dibayar.
+            </p>
+            <button type="submit" id="checkout-button" class="checkout-button" value="checkout">Pilih pembayaran</button>
+          </form>
+          <section class="payment-method-panel" id="payment-method-panel" hidden>
+            <h5>Pilih Metode Pembayaran</h5>
+            <p class="payment-order-label">Total: <strong id="payment-total"></strong></p>
+            <p class="payment-order-label" id="payment-order-label" hidden>Order: <strong id="payment-order-id"></strong></p>
+            <div class="payment-method-list" id="payment-method-list">
+              <button type="button" class="payment-method" data-payment-method="qris">
+                <strong>QRIS</strong>
+                <span>Scan dengan e-wallet atau m-banking</span>
+              </button>
+              <button type="button" class="payment-method" data-payment-method="gopay">
+                <strong>GoPay</strong>
+                <span>Bayar lewat aplikasi GoPay</span>
+              </button>
+              <button type="button" class="payment-method" data-payment-method="bca">
+                <strong>BCA Virtual Account</strong>
+                <span>Transfer lewat BCA</span>
+              </button>
+              <button type="button" class="payment-method" data-payment-method="bni">
+                <strong>BNI Virtual Account</strong>
+                <span>Transfer lewat BNI</span>
+              </button>
+              <button type="button" class="payment-method" data-payment-method="bri">
+                <strong>BRI Virtual Account</strong>
+                <span>Transfer lewat BRI</span>
+              </button>
+              <button type="button" class="payment-method" data-payment-method="mandiri">
+                <strong>Mandiri Bill Payment</strong>
+                <span>Bayar lewat Livin' atau ATM Mandiri</span>
+              </button>
+            </div>
+            <div class="payment-instruction" id="payment-instruction" hidden></div>
+            <div class="payment-method-actions">
+              <button type="button" id="change-payment-button" class="change-payment-button" hidden>
+                Ganti metode pembayaran
+              </button>
+              <button type="button" id="cancel-payment-button" class="cancel-payment-button">
+                Batalkan order
+              </button>
+            </div>
+          </section>
+          <section class="order-success-panel" id="order-success-panel" hidden>
+            <h5>Pesanan diterima</h5>
+            <p id="order-success-text"></p>
+            <button type="button" id="order-success-close" class="checkout-button">Selesai</button>
+          </section>
+        </div>
+      </div>
+    </div>
+    <!-- Checkout Modal End -->
+
+    <!-- Hero Section  Start -->
+    <section class="hero" id="home">
+      <div class="mask-container">
+        <main class="content">
+          <h1>Pesan <span>Kopi</span> dari Mejamu</h1>
+        </main>
+      </div>
+      <a href="menu.html" class="cta hero-cta">
+        <span>Lihat menu</span>
+        <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </section>
+    <!-- Hero Section End -->
+
+    <!-- About Section Start -->
+    <section id="about" class="about">
+      <h2><span>Tentang</span> Kami</h2>
+
+      <div class="row">
+        <div class="about-img">
+          <img src="img/tentang-kami.jpg" alt="Suasana kedai FJ Coffee" />
+        </div>
+        <div class="content">
+          <h3>Kopi enak tanpa antre di kasir</h3>
+          <p>
+            Di FJ Coffee kamu bisa langsung duduk. Buka menu di ponsel, pilih
+            minuman dan makanan, lalu bayar dari meja.
+          </p>
+          <p>
+            Pesanan masuk ke barista begitu pembayaran berhasil, kemudian kami
+            antar ke mejamu atau siapkan untuk dibawa pulang.
+          </p>
+        </div>
+      </div>
+    </section>
+    <!-- About Section End -->
+
+    <!-- Produk Section Start -->
+    <section class="products" id="products" x-data>
+      <h2><span>Biji Kopi</span> untuk Dibawa Pulang</h2>
+      <p>Kemasan 200 gram, digiling sesuai permintaan saat diambil di kasir. Minuman dan makanan ada di <a href="menu.html">halaman menu</a>.</p>
+
+      <div class="row">
+        <template x-for="item in $store.menu.beans" :key="item.id">
+          <div class="product-card-wrapper">
+            <div
+              class="product-card"
+              :data-product-id="item.id"
+              :data-product-name="item.name"
+              :data-product-price="item.price"
+              :data-product-img="item.img"
+              :data-product-rating="item.rating"
+            >
+            <div class="product-icons">
+              <a href="#" data-keep-cart @click.prevent="$store.cart.add(item)" :aria-label="`Tambah ${item.name} ke keranjang`">
+                <svg
+                  width="24"
+                  height="24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <use href="img/feather-sprite.svg#shopping-cart" /></svg
+              ></a>
+              <a href="#" class="item-detail-button" :aria-label="`Lihat detail ${item.name}`">
+                <svg
+                  width="24"
+                  height="24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <use href="img/feather-sprite.svg#eye" /></svg
+              </a>
+            </div>
+            <div class="product-image">
+              <img :src="`img/${item.img}`" :alt="item.name" />
+            </div>
+            <div class="product-content">
+              <h3 x-text="item.name"></h3>
+              <div class="product-stars">
+                <template x-for="star in 5" :key="star">
+                  <span class="star" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" class="star-outline">
+                      <use href="img/feather-sprite.svg#star" />
+                    </svg>
+                    <span
+                      class="star-fill"
+                      :style="{
+                        width: `${Math.max(0, Math.min(1, item.rating - star + 1)) * 100}%`
+                      }"
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24">
+                        <use href="img/feather-sprite.svg#star" />
+                      </svg>
+                    </span>
+                  </span>
+                </template>
+              </div>
+              <div class="product-price">
+                <span x-text="rupiah(item.price)"></span>
+              </div>
+            </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </section>
+    <!-- Produk Section End -->
+
+    <!-- Contact Section Start -->
+    <section id="contact" class="contact">
+      <h2><span>Kontak</span> Kami</h2>
+      <p>Mampir, atau hubungi kami untuk pesanan dalam jumlah banyak.</p>
+
+      <div class="contact-info">
+        <div>
+          <h3>Alamat</h3>
+          <p>Yogyakarta, Indonesia</p>
+        </div>
+        <div>
+          <h3>Jam buka</h3>
+          <p>Setiap hari, 08.00 sampai 22.00</p>
+        </div>
+        <div>
+          <h3>Hubungi</h3>
+          <p><a href="https://instagram.com/farisjihadihanif" target="_blank" rel="noopener">Instagram @farisjihadihanif</a></p>
+        </div>
+      </div>
+    </section>
+    <!-- Contact Section End -->
+
+    <!-- Footer Section Start -->
+    <footer>
+      <!-- Socials -->
+      <div class="socials">
+        <a href="https://instagram.com/farisjihadihanif" target="_blank" rel="noopener" aria-label="Instagram">
+          <i data-feather="instagram"></i>
+        </a>
+        <a href="https://github.com/farisjihadihanif/" target="_blank" rel="noopener" aria-label="GitHub">
+          <i data-feather="github"></i>
+        </a>
+      </div>
+      <!-- Links -->
+      <div class="links">
+        <a href="#home">Home</a>
+        <a href="#about">Tentang Kami</a>
+        <a href="menu.html">Menu</a>
+        <a href="#contact">Kontak</a>
+      </div>
+      <!-- Credit -->
+      <div class="credit">
+        <p>
+          Dikembangkan oleh <a href="https://github.com/farisjihadihanif/">farisjihadihanif</a> | &copy; 2026.
+        </p>
+        <p>
+          Tampilan dasar dari tutorial <a href="https://github.com/sandhikagalih/kedai-kopi-kenangan-senja">Sandhika Galih</a>.
+        </p>
+      </div>
+    </footer>
+    <!-- Footer Section End -->
+
+    <!-- Modal Box Item Detail Start -->
+    <div class="modal" id="item-detail-modal">
+      <div class="modal-container">
+        <a href="" class="close-icon" aria-label="Tutup"><i data-feather="x"></i></a>
+        <div class="modal-content">
+          <img src="img/logo.png" alt="" />
+          <div class="product-content">
+            <h3></h3>
+            <p></p>
+            <div class="product-stars"></div>
+            <div class="product-price"></div>
+            <a href="#" class="modal-add-cart" data-keep-cart>
+              <i data-feather="shopping-cart"></i>
+              <span>Tambah ke keranjang</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Box Item Detail End -->
+
+    <!-- JavaScript -->
+    <script src="js/script.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Affogato">
+<rect width="400" height="300" fill="#1b140e"/>
+<ellipse cx="200" cy="258" rx="120" ry="12" fill="#000" opacity=".35"/>
+<path d="M140 120 L260 120 Q262 210 200 214 Q138 210 140 120 Z" fill="#ffffff" opacity=".14" stroke="#f3e6d0" stroke-width="4"/><path d="M146 170 L254 170 Q250 208 200 210 Q150 208 146 170 Z" fill="#3a2313"/><circle cx="200" cy="150" r="42" fill="#fff8ea"/><path d="M168 138 q30 -26 62 0 q-6 26 -20 44 q-22 4 -34 -8 z" fill="#6b3f1d" opacity=".85"/><rect x="192" y="212" width="16" height="28" fill="#f3e6d0" opacity=".8"/><ellipse cx="200" cy="244" rx="48" ry="8" fill="#f3e6d0" opacity=".8"/>
+</svg>

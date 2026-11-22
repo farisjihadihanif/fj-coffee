@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Chocolate Chip Cookie">
+<rect width="400" height="300" fill="#1b140e"/>
+<ellipse cx="200" cy="258" rx="120" ry="12" fill="#000" opacity=".35"/>
+<ellipse cx="200" cy="232" rx="150" ry="28" fill="#f3e6d0"/><ellipse cx="200" cy="227" rx="116" ry="18" fill="#e3d3b5"/><ellipse cx="200" cy="196" rx="92" ry="56" fill="#c98f4f"/><ellipse cx="200" cy="190" rx="92" ry="54" fill="#dba864"/><circle cx="160" cy="176" r="9" fill="#4a2a12"/><circle cx="196" cy="160" r="9" fill="#4a2a12"/><circle cx="236" cy="178" r="9" fill="#4a2a12"/><circle cx="176" cy="206" r="9" fill="#4a2a12"/><circle cx="220" cy="208" r="9" fill="#4a2a12"/><circle cx="248" cy="196" r="9" fill="#4a2a12"/><circle cx="150" cy="196" r="9" fill="#4a2a12"/>
+</svg>

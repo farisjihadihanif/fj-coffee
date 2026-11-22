@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Vanilla Latte">
+<rect width="400" height="300" fill="#1b140e"/>
+<ellipse cx="200" cy="258" rx="120" ry="12" fill="#000" opacity=".35"/>
+<path d="M140 70 L260 70 L246 240 Q245 250 234 250 L166 250 Q155 250 154 240 Z" fill="#ffffff" opacity=".12"/><clipPath id="g"><path d="M140 70 L260 70 L246 240 Q245 250 234 250 L166 250 Q155 250 154 240 Z"/></clipPath><g clip-path="url(#g)"><rect x="130" y="84" width="140" height="25" fill="#fff8ea"/><rect x="130" y="108" width="140" height="29" fill="#6b3f1d"/><rect x="130" y="136" width="140" height="117" fill="#e8d2b0"/></g><path d="M140 70 L260 70 L246 240 Q245 250 234 250 L166 250 Q155 250 154 240 Z" fill="none" stroke="#f3e6d0" stroke-width="4" opacity=".8"/>
+</svg>

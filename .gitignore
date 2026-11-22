@@ -1,0 +1,23 @@
+node_modules/
+
+# Secret: hanya contoh yang boleh ikut ke Git.
+.env
+.env.*
+!.env.example
+
+# Salinan lama dan arsip zip, berisi kode versi rentan. Jangan di-push.
+_backup-original/
+
+# Laporan audit keamanan lokal.
+CLAUDE-SECURITY-*/
+
+# Log dan snapshot dari Playwright MCP.
+.playwright-mcp/
+
+# Catatan dan pengaturan asisten AI, hanya untuk lokal.
+CLAUDE.md
+AGENTS.md
+docs/
+.claude/
+
+*.log

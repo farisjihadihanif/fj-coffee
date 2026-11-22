@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Cheesecake">
+<rect width="400" height="300" fill="#1b140e"/>
+<ellipse cx="200" cy="258" rx="120" ry="12" fill="#000" opacity=".35"/>
+<ellipse cx="200" cy="244" rx="120" ry="14" fill="#f3e6d0"/><path d="M110 236 L110 150 L290 110 L290 236 Z" fill="#f6e3a8"/><path d="M110 176 L290 136 L290 146 L110 186 Z" fill="#f9ecc4"/><path d="M110 150 L290 110 L290 124 L110 164 Z" fill="#fbf1cf"/><path d="M110 222 L290 222 L290 236 L110 236 Z" fill="#b8742f"/><circle cx="230" cy="112" r="13" fill="#c0392b"/>
+</svg>

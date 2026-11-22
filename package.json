@@ -1,0 +1,21 @@
+{
+  "name": "fj-coffee",
+  "version": "1.1.0",
+  "private": true,
+  "description": "FJ Coffee: katalog menu kafe dengan pemesanan dan pembayaran Midtrans (QRIS, GoPay, Virtual Account).",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "midtrans-client": "^1.4.3"
+  }
+}
