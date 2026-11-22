@@ -1762,84 +1762,196 @@ input:focus-visible {
   line-height: 1.5;
 }
 
-/* Kontak: satu kolom, alamat, jam buka, lalu kontak. */
-.contact-info {
-  width: min(100%, 34rem);
-  margin: 2.5rem auto 0;
+/* Kontak: timeline vertikal. Kolom kiri ikon besar, kolom tengah garis
+   dengan titik, kolom kanan kartu. Garis terisi warna kopi mengikuti scroll
+   (--progress 0-1 dari script.js). Tanpa JS garisnya penuh. */
+.timeline {
+  --icon-col: 56px;
+  --rail-col: 32px;
+  --progress: 1;
+  position: relative;
+  display: grid;
+  gap: 28px;
+  width: min(100%, 560px);
+  margin: 40px auto 0;
   list-style: none;
   text-align: left;
 }
 
-.contact-info li {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 20px 4px;
-  border-top: 1px solid rgba(182, 137, 91, 0.25);
+.timeline::before,
+.timeline::after {
+  content: "";
+  position: absolute;
+  top: 20px;
+  bottom: 12px;
+  left: calc(var(--icon-col) + var(--rail-col) / 2 - 1px);
+  width: 2px;
+  border-radius: 1px;
 }
 
-.contact-info li:last-child {
-  border-bottom: 1px solid rgba(182, 137, 91, 0.25);
+.timeline::before {
+  background: #2e2318;
 }
 
-.contact-icon {
-  flex: none;
-  width: 22px;
-  height: 22px;
-  margin-top: 2px;
+.timeline::after {
+  background: var(--primary);
+  transform: scaleY(var(--progress));
+  transform-origin: top;
+}
+
+.timeline-step {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: var(--icon-col) var(--rail-col) minmax(0, 1fr);
+  align-items: start;
+}
+
+/* Garis berhenti di titik terakhir: tutup sisanya dengan warna latar. */
+.timeline-step:last-child::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  bottom: -12px;
+  left: var(--icon-col);
+  width: var(--rail-col);
+  background: var(--bg);
+}
+
+.timeline-icon {
+  width: 40px;
+  height: 40px;
+  justify-self: center;
   fill: none;
   stroke: var(--primary);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.timeline-dot {
+  position: relative;
+  z-index: 1;
+  justify-self: center;
+  width: 14px;
+  height: 14px;
+  margin-top: 13px;
+  border: 2px solid #5a4430;
+  border-radius: 50%;
+  background: var(--bg);
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Titik menyala begitu garis yang terisi sampai ke langkahnya. */
+.timeline-step.is-reached .timeline-dot,
+html:not(.timeline-ready) .timeline-dot {
+  border-color: var(--primary);
+  background: var(--primary);
+  box-shadow: 0 0 0 5px rgba(182, 137, 91, 0.18);
+}
+
+.timeline-card {
+  margin-left: 8px;
+  padding: 16px 20px 18px;
+  border: 1px solid #2e2318;
+  border-radius: 12px;
+  background: #120d09;
+}
+
+.timeline-card h3 {
+  margin-bottom: 4px;
+  color: var(--primary);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.contact .timeline-card p {
+  max-width: none;
+  margin: 0;
+  color: #f3e6d0;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.timeline-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  list-style: none;
+}
+
+.timeline-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 6px 14px;
+  border: 1px solid rgba(182, 137, 91, 0.45);
+  border-radius: 999px;
+  color: #f3e6d0;
+  font-size: 15px;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.timeline-links a:hover {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--bg);
+}
+
+.timeline-links svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.contact-info h3 {
-  margin-bottom: 2px;
-  color: var(--primary);
-  font-size: 15px;
-  font-weight: 600;
+@media (max-width: 450px) {
+  .timeline {
+    --icon-col: 36px;
+    --rail-col: 24px;
+    gap: 20px;
+  }
+
+  .timeline-icon {
+    width: 28px;
+    height: 28px;
+    margin-top: 6px;
+  }
+
+  .timeline-card {
+    margin-left: 4px;
+    padding: 14px 16px 16px;
+  }
 }
 
-.contact .contact-info p {
-  max-width: none;
-  margin: 0;
-  text-align: left;
-  font-size: 16px;
-  line-height: 1.5;
-}
-
-.contact-info a {
-  color: #fff;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-/* Muncul berurutan dari atas saat digulir ke layar. Kelas reveal-ready
-   dipasang oleh script.js, jadi tanpa JS isinya langsung tampil. */
-.reveal-ready [data-reveal] > * {
+/* Kartu muncul satu per satu saat langkahnya masuk layar. Kelas
+   timeline-ready dipasang oleh script.js, jadi tanpa JS isinya langsung
+   tampil. */
+.timeline-ready .timeline-step .timeline-card,
+.timeline-ready .timeline-step .timeline-icon {
   opacity: 0;
-  transform: translateY(-12px);
+  transform: translateX(16px);
 }
 
-.reveal-ready [data-reveal].is-revealed > * {
+.timeline-ready .timeline-step .timeline-icon {
+  transform: translateX(-12px);
+}
+
+.timeline-ready .timeline-step.is-revealed .timeline-card,
+.timeline-ready .timeline-step.is-revealed .timeline-icon {
   opacity: 1;
   transform: none;
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-}
-
-.reveal-ready [data-reveal].is-revealed > :nth-child(2) {
-  transition-delay: 0.12s;
-}
-
-.reveal-ready [data-reveal].is-revealed > :nth-child(3) {
-  transition-delay: 0.24s;
+  transition: opacity 0.5s ease-out var(--delay, 0s), transform 0.5s ease-out var(--delay, 0s);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal-ready [data-reveal] > * {
-    opacity: 1;
-    transform: none;
+  .timeline-dot {
     transition: none;
   }
 }

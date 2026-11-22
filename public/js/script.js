@@ -689,23 +689,52 @@ async function cancelPayment() {
 // Alpine dimuat dengan defer, jadi tunggu sampai store-nya siap.
 document.addEventListener("alpine:initialized", resumePendingPayment);
 
-// Bagian bertanda data-reveal muncul berurutan saat pertama kali terlihat.
-// Dilewati kalau pengguna memilih mengurangi animasi.
+// Timeline kontak: garisnya terisi mengikuti scroll, titik menyala saat garis
+// sampai, dan kartu muncul satu per satu saat masuk layar. Dilewati kalau
+// pengguna memilih mengurangi animasi; garis dan kartu langsung tampil penuh.
 (() => {
-  const targets = document.querySelectorAll("[data-reveal]");
+  const timeline = document.querySelector("[data-timeline]");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (!targets.length || reduceMotion || !("IntersectionObserver" in window)) return;
+  if (!timeline || reduceMotion || !("IntersectionObserver" in window)) return;
 
+  const steps = [...timeline.querySelectorAll("[data-reveal]")];
+  const dots = steps.map((step) => step.querySelector(".timeline-dot"));
+  let frame = 0;
+
+  // Garis terisi sampai titik 60% tinggi layar.
+  const update = () => {
+    frame = 0;
+    const anchor = window.innerHeight * 0.6;
+    const rect = timeline.getBoundingClientRect();
+    // Garis dimulai 20px dari atas (pusat titik pertama), sama dengan CSS.
+    const progress = Math.min(1, Math.max(0, (anchor - rect.top - 20) / (rect.height - 32)));
+    timeline.style.setProperty("--progress", progress.toFixed(3));
+    dots.forEach((dot, index) => {
+      const box = dot.getBoundingClientRect();
+      steps[index].classList.toggle("is-reached", box.top + box.height / 2 <= anchor);
+    });
+  };
+  const requestUpdate = () => {
+    if (!frame) frame = window.requestAnimationFrame(update);
+  };
+
+  // Langkah yang masuk layar bersamaan tetap muncul bergantian.
   const observer = new IntersectionObserver(
     (entries) => {
+      let order = 0;
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
+        entry.target.style.setProperty("--delay", `${order++ * 0.15}s`);
         entry.target.classList.add("is-revealed");
         observer.unobserve(entry.target);
       }
     },
-    { threshold: 0.25 },
+    { threshold: 0.35 },
   );
-  document.documentElement.classList.add("reveal-ready");
-  targets.forEach((target) => observer.observe(target));
+
+  document.documentElement.classList.add("timeline-ready");
+  steps.forEach((step) => observer.observe(step));
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate);
+  update();
 })();
