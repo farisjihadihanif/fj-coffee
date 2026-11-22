@@ -88,26 +88,12 @@
             </div>
             <div class="cart-column cart-quantity">
               <div class="quantity-controls">
-                <button type="button" aria-label="Kurangi quantity" title="Kurangi quantity" @click.stop="$store.cart.remove(item.id)">
-                  <span class="cart-action-icon">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <use href="img/feather-sprite.svg#shopping-cart" />
-                    </svg>
-                    <svg viewBox="0 0 24 24" class="cart-action-symbol" aria-hidden="true">
-                      <use href="img/feather-sprite.svg#minus" />
-                    </svg>
-                  </span>
+                <button type="button" class="qty-step" aria-label="Kurangi jumlah" @click.stop="$store.cart.remove(item.id)">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><use href="img/feather-sprite.svg#minus" /></svg>
                 </button>
-                <strong x-text="item.quantity"></strong>
-                <button type="button" aria-label="Tambah quantity" title="Tambah quantity" @click.stop="$store.cart.add(item)" :disabled="item.quantity >= $store.config.maxQuantityPerItem">
-                  <span class="cart-action-icon">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <use href="img/feather-sprite.svg#shopping-cart" />
-                    </svg>
-                    <svg viewBox="0 0 24 24" class="cart-action-symbol" aria-hidden="true">
-                      <use href="img/feather-sprite.svg#plus" />
-                    </svg>
-                  </span>
+                <strong class="qty-value" x-text="item.quantity" aria-live="polite"></strong>
+                <button type="button" class="qty-step" aria-label="Tambah jumlah" @click.stop="$store.cart.add(item)" :disabled="item.quantity >= $store.config.maxQuantityPerItem">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><use href="img/feather-sprite.svg#plus" /></svg>
                 </button>
               </div>
             </div>

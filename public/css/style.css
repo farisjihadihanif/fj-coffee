@@ -578,62 +578,6 @@ dialog.modal::backdrop {
   grid-area: total;
 }
 
-.shopping-cart .quantity-controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.25rem;
-}
-
-.shopping-cart .quantity-controls button {
-  display: grid;
-  width: 1.45rem;
-  height: 1.45rem;
-  padding: 0;
-  place-items: center;
-  border: 1px solid var(--bg);
-  border-radius: 50%;
-  cursor: pointer;
-  background-color: transparent;
-  color: var(--bg);
-  font-weight: bold;
-  font-size: 0.9rem;
-}
-
-.shopping-cart .quantity-controls button svg {
-  width: 0.85rem;
-  height: 0.85rem;
-  stroke: var(--bg);
-  stroke-width: 2.5;
-}
-
-.shopping-cart .cart-action-icon {
-  position: relative;
-  display: block;
-  width: 1rem;
-  height: 1rem;
-}
-
-.shopping-cart .cart-action-icon > svg:first-child {
-  width: 1rem;
-  height: 1rem;
-  stroke: var(--primary);
-  stroke-width: 2;
-}
-
-.shopping-cart .cart-action-symbol {
-  position: absolute;
-  right: -0.25rem;
-  bottom: -0.25rem;
-  width: 0.55rem;
-  height: 0.55rem;
-  padding: 1px;
-  border-radius: 50%;
-  background: #fff;
-  stroke: var(--primary);
-  stroke-width: 3;
-}
-
 .shopping-cart .remove-cart-item {
   grid-area: remove;
   justify-self: end;
@@ -1500,10 +1444,6 @@ input:focus-visible {
   font-weight: 700;
 }
 
-.shopping-cart .quantity-controls button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
 
 /* Form pemesan */
 .form-container .order-type {
@@ -1779,12 +1719,26 @@ input:focus-visible {
   right: 1.5rem;
 }
 
+/* Dua baris di semua ukuran: nama menu di atas, lalu stepper, subtotal, dan
+   hapus. Harga satuan sudah terlihat di kartu menu. */
 .shopping-cart .cart-item {
-  margin: 1.2rem 0;
-  grid-template-columns: 52px minmax(0, 1fr) auto auto auto 28px;
-  grid-template-areas: "image info price quantity total remove";
-  gap: 0.5rem;
-  padding-bottom: 0.8rem;
+  margin: 0;
+  grid-template-columns: 52px minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    "image info info info"
+    "image quantity total remove";
+  gap: 6px 12px;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.shopping-cart .cart-item > img,
+.shopping-cart .cart-thumb {
+  grid-row: 1 / span 2;
+}
+
+.shopping-cart .cart-price {
+  display: none;
 }
 
 .shopping-cart .cart-item img,
@@ -1798,7 +1752,7 @@ input:focus-visible {
 .shopping-cart .cart-product-info h3 {
   font-size: 14px;
   line-height: 1.3;
-  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .shopping-cart .cart-column strong {
@@ -1843,25 +1797,6 @@ input:focus-visible {
 
   .shopping-cart.active {
     right: 8px;
-  }
-
-  .shopping-cart .cart-item {
-    grid-template-columns: 52px minmax(0, 1fr) auto auto;
-    grid-template-areas:
-      "image info info info"
-      "image quantity total remove";
-    gap: 6px 12px;
-    align-items: center;
-    padding: 12px 0;
-  }
-
-  .shopping-cart .cart-item > img,
-  .shopping-cart .cart-thumb {
-    grid-row: 1 / span 2;
-  }
-
-  .shopping-cart .cart-price {
-    display: none;
   }
 
   .shopping-cart .cart-product-info h3 {
@@ -2328,4 +2263,56 @@ input:focus-visible {
   .modal-container {
     animation: none;
   }
+}
+
+/* ===== Stepper jumlah di keranjang ===== */
+.shopping-cart .quantity-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--primary);
+  border-radius: 999px;
+}
+
+.shopping-cart .qty-step {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  place-items: center;
+  border-radius: 50%;
+  background: transparent;
+  color: #3a2313;
+  cursor: pointer;
+}
+
+.shopping-cart .qty-step:hover:not(:disabled) {
+  background: #f1e4d4;
+}
+
+.shopping-cart .qty-step svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.shopping-cart .qty-step:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.shopping-cart .quantity-controls .qty-value {
+  min-width: 2ch;
+  color: var(--bg);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.shopping-cart .cart-quantity {
+  align-items: flex-start;
 }
