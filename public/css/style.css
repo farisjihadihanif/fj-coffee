@@ -31,7 +31,9 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1.4rem 7%;
-  background-color: rgba(1, 1, 1, 0.8);
+  /* Latar pekat supaya judul halaman tidak terlihat di balik navbar saat
+     menggulir. */
+  background-color: #010101;
   border-bottom: 1px solid #513c28;
   position: fixed;
   top: 0;
