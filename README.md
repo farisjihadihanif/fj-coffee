@@ -1,5 +1,7 @@
 # FJ Coffee
 
+> **FJ Coffee adalah kafe fiktif.** Proyek ini dibuat untuk portofolio: alamat, jam buka, menu, dan harga hanya contoh, dan versi online-nya memakai Midtrans sandbox sehingga tidak ada uang sungguhan yang berpindah.
+
 Katalog menu kafe dengan pemesanan dan pembayaran online. Pengunjung memilih menu, mengisi nama dan nomor meja (atau bawa pulang), lalu membayar lewat QRIS, GoPay, atau transfer bank melalui Midtrans Core API.
 
 Tampilan dasarnya berasal dari tutorial [Kedai Kopi Kenangan Senja](https://github.com/sandhikagalih/kedai-kopi-kenangan-senja) oleh Sandhika Galih. Yang dikembangkan di proyek ini: katalog menu berbasis data, keranjang, alur pemesanan kafe, server Express, dan integrasi Midtrans.
@@ -59,4 +61,4 @@ Proyek ini butuh hosting yang menjalankan Node.js (misalnya Render, Railway, ata
 ## Batasan
 
 - Belum ada database dan halaman kasir. Pesanan yang sudah dibayar hanya terlihat di dashboard Midtrans.
-- Alamat dan jam buka di bagian Kontak masih contoh.
+- Kafe ini fiktif. Alamat dan jam buka di bagian Kontak hanya contoh.
