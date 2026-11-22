@@ -186,6 +186,15 @@ function showPaymentNotification(message, type) {
   }, 5000);
 }
 
+// Dikirim oleh store cart (src/app.js) saat menu di keranjang sudah tidak
+// ada di katalog.
+window.addEventListener("cart:items-removed", (e) => {
+  showPaymentNotification(
+    `${e.detail.join(", ")} sudah tidak tersedia dan dihapus dari keranjang.`,
+    "warning",
+  );
+});
+
 function showPanel(panel) {
   checkoutForm.hidden = panel !== "form";
   paymentMethodPanel.hidden = panel !== "payment";

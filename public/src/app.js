@@ -29,6 +29,7 @@ document.addEventListener("alpine:init", () => {
         this.categories = data.categories;
         this.items = data.products;
         this.status = "ready";
+        Alpine.store("cart").syncWithCatalog(this.items);
       } catch (error) {
         this.status = "error";
       }
@@ -112,6 +113,26 @@ document.addEventListener("alpine:init", () => {
     },
     get grandTotal() {
       return this.total + this.tax;
+    },
+    // Keranjang dari localStorage bisa berisi harga lama atau menu yang sudah
+    // dihapus. Samakan dengan katalog server setiap kali katalog dimuat.
+    syncWithCatalog(products) {
+      const removed = [];
+      this.items = this.items.filter((cartItem) => {
+        const product = products.find((item) => item.id === cartItem.id);
+        if (!product) {
+          removed.push(cartItem.name);
+          return false;
+        }
+        cartItem.name = product.name;
+        cartItem.price = product.price;
+        cartItem.img = product.img || "";
+        return true;
+      });
+      this.save();
+      if (removed.length) {
+        window.dispatchEvent(new CustomEvent("cart:items-removed", { detail: removed }));
+      }
     },
     quantityOf(id) {
       return this.items.find((item) => item.id === id)?.quantity || 0;
