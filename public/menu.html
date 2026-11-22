@@ -265,55 +265,65 @@
       <h1><span>Menu</span> FJ Coffee</h1>
       <p>Pilih menu, lalu buka keranjang untuk memesan dan membayar.</p>
 
-      <div
-        class="cat-dropdown"
-        x-data="{ open: false }"
-        @click.outside="open = false"
-        @keydown.escape="open = false"
-      >
-        <span class="cat-dropdown-label" id="cat-dropdown-label">Kategori</span>
+      <div class="cat-select" x-data="categorySelect" @click.outside="open && hide(false)">
+        <span class="cat-select-label" id="cat-select-label">Kategori</span>
         <button
           type="button"
-          class="cat-dropdown-toggle"
+          class="cat-select-button"
+          id="cat-select-button"
+          x-ref="button"
           aria-haspopup="listbox"
-          aria-labelledby="cat-dropdown-label"
-          :aria-expanded="open"
-          :class="{ open: open }"
-          @click="open = !open"
+          aria-controls="cat-select-list"
+          aria-labelledby="cat-select-label cat-select-button"
+          :aria-expanded="open.toString()"
+          @click="toggle()"
+          @keydown.arrow-down.prevent="show()"
+          @keydown.arrow-up.prevent="show()"
         >
-          <span x-text="$store.menu.activeCategory === 'all' ? 'Semua menu' : (($store.menu.categories.find((c) => c.id === $store.menu.activeCategory) || {}).name || 'Semua menu')"></span>
-          <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M5 7.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cat-select-value" x-text="selected.name">Semua</span>
+          <span class="cat-select-count" x-text="selected.count" x-show="$store.menu.status === 'ready'" aria-hidden="true"></span>
+          <svg class="cat-select-chevron" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M5 7.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <ul
-          class="cat-dropdown-list"
+          class="cat-select-list"
+          id="cat-select-list"
           role="listbox"
+          tabindex="-1"
+          x-ref="list"
+          aria-labelledby="cat-select-label"
+          :aria-activedescendant="`cat-option-${active}`"
           x-show="open"
           x-cloak
-          x-transition.opacity.scale.origin.top.duration.150ms
+          x-transition:enter="cat-select-enter"
+          x-transition:enter-start="cat-select-from"
+          @keydown.arrow-down.prevent="move(1)"
+          @keydown.arrow-up.prevent="move(-1)"
+          @keydown.home.prevent="moveTo(0)"
+          @keydown.end.prevent="moveTo(-1)"
+          @keydown.page-down.prevent="move(5)"
+          @keydown.page-up.prevent="move(-5)"
+          @keydown.enter.prevent="choose(active)"
+          @keydown.space.prevent="choose(active)"
+          @keydown.escape.prevent.stop="hide()"
+          @keydown.tab="hide(false)"
+          @keydown="jump($event)"
         >
-          <li
-            role="option"
-            :aria-selected="$store.menu.activeCategory === 'all'"
-            :class="{ active: $store.menu.activeCategory === 'all' }"
-            @click="$store.menu.activeCategory = 'all'; open = false"
-          >Semua menu</li>
-          <template x-for="category in $store.menu.categories.filter((c) => c.id !== 'beans')" :key="category.id">
+          <template x-for="(option, index) in options" :key="option.id">
             <li
               role="option"
-              :aria-selected="$store.menu.activeCategory === category.id"
-              :class="{ active: $store.menu.activeCategory === category.id }"
-              @click="$store.menu.activeCategory = category.id; open = false"
-              x-text="category.name"
-            ></li>
+              :id="`cat-option-${index}`"
+              :data-index="index"
+              :aria-selected="(option.id === selected.id).toString()"
+              :class="{ active: index === active }"
+              @mousemove="active = index"
+              @click="choose(index)"
+            >
+              <span x-text="option.name"></span>
+              <span class="cat-select-count" x-text="option.count" aria-hidden="true"></span>
+              <svg class="cat-select-check" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </li>
           </template>
         </ul>
-      </div>
-
-      <div class="menu-filters" role="group" aria-label="Kategori menu">
-        <button type="button" :class="{ active: $store.menu.activeCategory === 'all' }" @click="$store.menu.activeCategory = 'all'">Semua</button>
-        <template x-for="category in $store.menu.categories.filter((c) => c.id !== 'beans')" :key="category.id">
-          <button type="button" :class="{ active: $store.menu.activeCategory === category.id }" @click="$store.menu.activeCategory = category.id" x-text="category.name"></button>
-        </template>
       </div>
 
       <p class="menu-state" x-show="$store.menu.status === 'loading'">Memuat menu...</p>

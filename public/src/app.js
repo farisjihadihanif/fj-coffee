@@ -287,6 +287,79 @@ document.addEventListener("alpine:init", () => {
     },
   });
 
+  // Dropdown kategori di halaman menu (pola listbox WAI-ARIA). Fokus tetap di
+  // daftar; opsi yang sedang ditunjuk ditandai lewat aria-activedescendant.
+  Alpine.data("categorySelect", () => ({
+    open: false,
+    active: 0,
+    get options() {
+      const menu = Alpine.store("menu");
+      const count = (id) =>
+        menu.items.filter((item) => item.category === id && menu.matches(item)).length;
+      const categories = menu.categories.filter((category) => category.id !== "beans");
+      return [
+        {
+          id: "all",
+          name: "Semua",
+          count: categories.reduce((sum, category) => sum + count(category.id), 0),
+        },
+        ...categories.map((category) => ({ ...category, count: count(category.id) })),
+      ];
+    },
+    get selected() {
+      const id = Alpine.store("menu").activeCategory;
+      return this.options.find((option) => option.id === id) || this.options[0];
+    },
+    show() {
+      this.active = Math.max(0, this.options.indexOf(this.selected));
+      this.open = true;
+      this.$nextTick(() => {
+        this.$refs.list.focus();
+        this.scrollActive();
+      });
+    },
+    hide(returnFocus = true) {
+      this.open = false;
+      if (returnFocus) this.$refs.button.focus();
+    },
+    toggle() {
+      this.open ? this.hide() : this.show();
+    },
+    choose(index) {
+      const option = this.options[index];
+      if (option) Alpine.store("menu").activeCategory = option.id;
+      this.hide();
+    },
+    move(step) {
+      const last = this.options.length - 1;
+      this.active = Math.min(last, Math.max(0, this.active + step));
+      this.scrollActive();
+    },
+    moveTo(index) {
+      this.active = index < 0 ? this.options.length - 1 : index;
+      this.scrollActive();
+    },
+    // Ketik huruf pertama untuk lompat ke kategori itu.
+    jump(event) {
+      if (event.key.length !== 1 || event.ctrlKey || event.metaKey || event.altKey) return;
+      const key = event.key.toLowerCase();
+      const count = this.options.length;
+      for (let step = 1; step <= count; step++) {
+        const index = (this.active + step) % count;
+        if (this.options[index].name.toLowerCase().startsWith(key)) {
+          this.active = index;
+          this.scrollActive();
+          return;
+        }
+      }
+    },
+    scrollActive() {
+      this.$nextTick(() =>
+        this.$refs.list.querySelector(`[data-index="${this.active}"]`)?.scrollIntoView({ block: "nearest" }),
+      );
+    },
+  }));
+
   Alpine.store("menu").load();
   Alpine.store("config").load();
 });
