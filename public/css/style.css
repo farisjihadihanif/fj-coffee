@@ -3134,3 +3134,113 @@ footer .credit a.credits-link:hover {
   color: #aaa;
   font-size: 13px;
 }
+
+/* ===== Ukuran huruf minimum =====
+   Skala rem turun sampai 55% di ponsel (1rem = 8,8px), jadi beberapa teks
+   jadi terlalu kecil. Batas bawahnya: 14px untuk teks isi dan tombol, 12px
+   untuk keterangan kecil (badge, jumlah, kredit). max() mempertahankan
+   ukuran asli di layar lebar. */
+.menu p,
+.contact p,
+.products p {
+  font-size: max(1rem, 15px);
+}
+
+.products .product-price {
+  font-size: max(1.3rem, 16px);
+}
+
+.menu .menu-tile p {
+  font-size: 14px;
+}
+
+.menu-tile .menu-item-add {
+  font-size: 14px;
+}
+
+.menu-tile .menu-item-count {
+  font-size: max(0.85em, 12px);
+}
+
+#shopping-cart-button .quantity-badge {
+  font-size: max(0.8rem, 12px);
+}
+
+.shopping-cart .cart-column strong,
+.shopping-cart .cart-total strong {
+  font-size: max(0.78rem, 14px);
+}
+
+.option-choice span {
+  font-size: max(1.3rem, 14px);
+}
+
+.option-choice span small {
+  font-size: max(0.9em, 12px);
+}
+
+.modal .modal-add-cart {
+  font-size: max(1.3rem, 15px);
+}
+
+.form-container h5 {
+  font-size: max(1.2rem, 16px);
+}
+
+.form-container form,
+.form-container .checkout-button {
+  font-size: max(1rem, 14px);
+}
+
+/* 16px di kolom isian supaya Safari iOS tidak memperbesar halaman. */
+.form-container input,
+.navbar .search-form input {
+  font-size: max(1rem, 16px);
+}
+
+footer .links a {
+  font-size: max(1rem, 14px);
+}
+
+footer .credit {
+  font-size: max(0.8rem, 12px);
+}
+
+.credit-by {
+  font-size: 14px;
+}
+
+/* Panel pembayaran di modal checkout. */
+.payment-method-panel h5 {
+  font-size: max(1.2rem, 16px);
+}
+
+.payment-order-label,
+.payment-instruction,
+.payment-notification,
+.demo-payment-note,
+.change-payment-button,
+.cancel-payment-button {
+  font-size: max(1rem, 14px);
+}
+
+.payment-method {
+  font-size: 15px;
+}
+
+.payment-method span {
+  font-size: max(0.75rem, 13px);
+}
+
+.payment-instruction h6 {
+  font-size: max(1rem, 15px);
+}
+
+.payment-instruction .payment-expiry {
+  font-size: max(0.85rem, 13px);
+}
+
+/* Tombol Lihat menu tetap satu baris di layar 360 px. */
+.hero .hero-cta {
+  white-space: nowrap;
+}
