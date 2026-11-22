@@ -318,9 +318,9 @@
                   <p x-text="item.description"></p>
                   <div class="menu-tile-foot">
                     <span class="menu-item-price" x-text="rupiah(item.price)"></span>
-                    <button type="button" class="menu-item-add" data-keep-cart @click="$store.cart.add(item)" :aria-label="`Tambah ${item.name} ke keranjang`">
-                      <span x-show="!$store.cart.quantityOf(item.id)">Tambah</span>
-                      <span x-show="$store.cart.quantityOf(item.id)" x-text="`${$store.cart.quantityOf(item.id)} di keranjang`"></span>
+                    <button type="button" class="menu-item-add" data-keep-cart @click="$store.cart.add(item)" :aria-label="$store.cart.quantityOf(item.id) ? `Tambah ${item.name}, ${$store.cart.quantityOf(item.id)} di keranjang` : `Tambah ${item.name} ke keranjang`">
+                      <span>Tambah</span>
+                      <span class="menu-item-count" x-show="$store.cart.quantityOf(item.id)" x-text="$store.cart.quantityOf(item.id)" aria-hidden="true"></span>
                     </button>
                   </div>
                 </div>

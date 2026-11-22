@@ -2316,3 +2316,30 @@ input:focus-visible {
 .shopping-cart .cart-quantity {
   align-items: flex-start;
 }
+
+/* Tombol tambah di kartu menu: label tetap "Tambah" dan jumlah di keranjang
+   tampil sebagai chip, supaya tombol tidak pecah dua baris di layar 360 px. */
+.menu-tile .menu-item-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.menu-tile .menu-item-count {
+  display: inline-grid;
+  min-width: 1.8em;
+  height: 1.8em;
+  padding: 0 0.4em;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--primary);
+  font-size: 0.85em;
+  line-height: 1;
+}
+
+.menu-tile .menu-item-add:hover .menu-item-count {
+  background: var(--primary);
+  color: var(--bg);
+}
