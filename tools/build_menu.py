@@ -1,7 +1,7 @@
 """Membuat ilustrasi menu (public/img/menu/*.svg) dan lib/catalog.js dari satu daftar.
 Jalankan: python tools/build_menu.py
 """
-import json, math, os, re
+import html, json, math, os, re
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 BG, P, CREAM, DARK, COFFEE, MILK = "#1b140e", "#b6895b", "#f3e6d0", "#3a2313", "#6b3f1d", "#e8d2b0"
@@ -10,7 +10,7 @@ def slugify(name):
     return re.sub(r"[^a-z0-9]+", "-", name.lower().replace("&", "and")).strip("-")
 
 def wrap(title, body):
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="{title}">\n'
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="{html.escape(title)}">\n'
             f'<rect width="400" height="300" fill="{BG}"/>\n'
             f'<ellipse cx="200" cy="258" rx="120" ry="12" fill="#000" opacity=".35"/>\n{body}\n</svg>\n')
 
@@ -283,7 +283,7 @@ def main():
     lines = []
     for pid, cat, name, price, desc, kind, args in M:
         slug = slugify(name)
-        with open(os.path.join(out_dir, slug + ".svg"), "w", encoding="utf-8") as f:
+        with open(os.path.join(out_dir, slug + ".svg"), "w", encoding="utf-8", newline="\n") as f:
             f.write(wrap(name, art(kind, **args)))
         lines.append(f'  {{ id: {pid}, category: "{cat}", name: {json.dumps(name)}, img: "menu/{slug}.svg", price: {price}, description: {json.dumps(desc, ensure_ascii=False)} }},')
     for pid, name, price, rating in BEANS:
@@ -312,7 +312,7 @@ const MAX_TABLE_NUMBER = 30;
 
 module.exports = {{ categories, products, fees, MAX_QUANTITY_PER_ITEM, MAX_TABLE_NUMBER }};
 """
-    with open(os.path.join(ROOT, "lib", "catalog.js"), "w", encoding="utf-8") as f:
+    with open(os.path.join(ROOT, "lib", "catalog.js"), "w", encoding="utf-8", newline="\n") as f:
         f.write(js)
     print(len(M), "menu,", len(BEANS), "biji kopi")
 

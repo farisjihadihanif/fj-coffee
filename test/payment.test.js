@@ -315,6 +315,11 @@ test("setiap menu punya gambar yang benar-benar ada", () => {
   for (const product of products.filter((item) => item.category !== "beans")) {
     const file = path.join(__dirname, "..", "public", "img", product.img);
     assert.ok(fs.existsSync(file), `gambar hilang: ${product.img}`);
+    if (file.endsWith(".svg")) {
+      // "&" mentah membuat SVG tidak valid dan gambar tidak tampil.
+      const svg = fs.readFileSync(file, "utf8");
+      assert.doesNotMatch(svg, /&(?!amp;|lt;|gt;|quot;|apos;|#)/, product.img);
+    }
   }
 });
 
