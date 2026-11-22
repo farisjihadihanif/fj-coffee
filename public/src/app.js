@@ -84,7 +84,7 @@ document.addEventListener("alpine:init", () => {
   // Store global untuk menyimpan isi keranjang.
   // Isinya disimpan di localStorage supaya tidak hilang saat pindah halaman.
   const CART_KEY = "fj-coffee-cart";
-  let savedCart = [];
+  let savedCart;
   try {
     savedCart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
   } catch (error) {

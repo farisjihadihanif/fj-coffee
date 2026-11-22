@@ -15,7 +15,8 @@ npm start
 Buka http://localhost:3000. Tanpa key Midtrans situs tetap tampil, tetapi checkout dinonaktifkan.
 
 ```bash
-npm test   # menguji server dengan Midtrans tiruan, tidak butuh key
+npm test       # menguji server dengan Midtrans tiruan, tidak butuh key
+npm run lint   # memeriksa kode dengan ESLint
 ```
 
 ## Struktur

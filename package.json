@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "test": "node --test"
+    "test": "node --test",
+    "lint": "eslint ."
   },
   "engines": {
     "node": ">=18"
@@ -17,5 +18,10 @@
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",
     "midtrans-client": "^1.4.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0"
   }
 }
