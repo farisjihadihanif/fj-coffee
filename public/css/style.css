@@ -2781,14 +2781,6 @@ input:focus-visible {
   color: var(--bg);
 }
 
-footer .credit .demo-disclaimer {
-  flex: 0 0 100%;
-  padding: 0 1.5rem;
-  text-align: center;
-  font-size: max(0.9rem, 12px);
-  font-weight: 500;
-}
-
 /* Penanda mode demo dan tombol keranjang melayang di bawah layar. Beri ruang
    di bawah footer supaya teksnya tidak tertutup. Alpine menyembunyikan
    penanda dengan style display: none di mode production. */
