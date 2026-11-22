@@ -53,12 +53,14 @@ document.addEventListener("alpine:init", () => {
       const query = this.query.trim().toLowerCase();
       return !query || item.name.toLowerCase().includes(query);
     },
-    // Semua menu, termasuk biji kopi, dikelompokkan per kategori.
+    // Menu per kategori. "Semua" hanya berisi minuman dan makanan; biji kopi
+    // hanya tampil kalau kategori Biji Kopi dipilih.
     get groups() {
       return this.categories
-        .filter(
-          (category) =>
-            this.activeCategory === "all" || this.activeCategory === category.id,
+        .filter((category) =>
+          this.activeCategory === "all"
+            ? category.id !== "beans"
+            : this.activeCategory === category.id,
         )
         .map((category) => ({
           ...category,
@@ -316,7 +318,10 @@ document.addEventListener("alpine:init", () => {
         {
           id: "all",
           name: "Semua",
-          count: categories.reduce((sum, category) => sum + count(category.id), 0),
+          // Tanpa biji kopi, sama dengan isi daftar "Semua".
+          count: categories
+            .filter((category) => category.id !== "beans")
+            .reduce((sum, category) => sum + count(category.id), 0),
         },
         ...categories.map((category) => ({ ...category, count: count(category.id) })),
       ];
