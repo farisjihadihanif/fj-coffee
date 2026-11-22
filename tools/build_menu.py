@@ -316,7 +316,19 @@ def temperatures_for(pid, cat):
     if cat == "frappe":
         return ["iced"]
     return TEMPERATURES.get(pid, ["hot", "iced"])
-BEANS = [(1, "Robusta Brazil", 45000, 4.5), (2, "America Blend", 75000, 5.0), (3, "Primo Passo", 100000, 4.6), (4, "Aceh Gayo", 150000, 4.7), (5, "Sumatra Mandailing", 90000, 4.3), (6, "Toraja Sapan", 120000, 4.6)]
+# Biji kopi 200 g: (id, nama, harga, rating).
+BEANS = [
+    (1, "Robusta Brazil", 45000, 4.5),
+    (2, "America Blend", 75000, 5.0),
+    (3, "Primo Passo", 100000, 4.6),
+    (4, "Aceh Gayo", 150000, 4.7),
+    (5, "Sumatra Mandailing", 90000, 4.3),
+    (6, "Toraja Sapan", 120000, 4.6),
+    (7, "Kintamani Bali", 115000, 4.6),
+    (8, "Flores Bajawa", 105000, 4.5),
+    (9, "Java Preanger", 95000, 4.4),
+    (10, "Wamena Papua", 140000, 4.8),
+]
 
 MENU_IMG_DIR = os.path.join(ROOT, "public", "img", "menu")
 
