@@ -148,6 +148,8 @@ const paymentMethodList = document.querySelector("#payment-method-list");
 const paymentInstruction = document.querySelector("#payment-instruction");
 const paymentOrderLabel = document.querySelector("#payment-order-label");
 const paymentOrderId = document.querySelector("#payment-order-id");
+const copyOrderIdButton = document.querySelector("#copy-order-id-button");
+const copyStatus = document.querySelector("#copy-status");
 const paymentTotal = document.querySelector("#payment-total");
 const changePaymentButton = document.querySelector("#change-payment-button");
 const cancelPaymentButton = document.querySelector("#cancel-payment-button");
@@ -393,6 +395,7 @@ function showActivePayment(transaction, expiresInMinutes) {
   paymentMethodList.hidden = true;
   paymentInstruction.hidden = false;
   paymentOrderId.textContent = activePayment.orderId;
+  copyOrderIdButton.dataset.copy = activePayment.orderId;
   paymentOrderLabel.hidden = false;
   paymentTotal.textContent = rupiah(transaction.grossAmount);
   renderPaymentInstruction(transaction, expiresInMinutes);
@@ -400,23 +403,51 @@ function showActivePayment(transaction, expiresInMinutes) {
   startPaymentStatusPolling();
 }
 
+// Tombol salin: nilai yang disalin ada di data-copy, nama untuk pembaca
+// layar di data-copy-name. Label tombol berubah jadi "Tersalin" sebentar.
+function copyButton(value, name, label = "Salin") {
+  const srName = label === "Salin" ? `<span class="sr-only"> ${escapeHtml(name)}</span>` : "";
+  return `<button type="button" class="copy-button" data-copy="${escapeHtml(value)}" data-copy-name="${escapeHtml(name)}"><span class="copy-button-label">${escapeHtml(label)}</span>${srName}</button>`;
+}
+
+function copyField(label, value, name, displayValue = value) {
+  return `<div class="copy-field">
+      <div class="copy-field-text"><span>${escapeHtml(label)}</span><strong>${escapeHtml(displayValue)}</strong></div>
+      ${copyButton(value, name)}
+    </div>`;
+}
+
+// Jumlah bayar dalam angka saja (242000), sesuai isian simulator dan m-banking.
+function amountDigits(amount) {
+  return String(Math.round(Number(amount)));
+}
+
 function renderPaymentInstruction(transaction, expiresInMinutes) {
   const expiry = `<p class="payment-expiry">Selesaikan pembayaran dalam ${Number(expiresInMinutes)} menit. Halaman ini akan memperbarui statusnya sendiri.</p>`;
+  const amountField = copyField(
+    "Jumlah tepat",
+    amountDigits(transaction.grossAmount),
+    "jumlah pembayaran",
+    rupiah(transaction.grossAmount),
+  );
   let html;
 
   if (transaction.qrCodeUrl) {
-    html = `<h6>Scan QRIS</h6><img src="${escapeHtml(transaction.qrCodeUrl)}" alt="Kode QRIS untuk pembayaran" />`;
+    html = `<h6>Scan QRIS</h6><img src="${escapeHtml(transaction.qrCodeUrl)}" alt="Kode QRIS untuk pembayaran" />
+      ${copyButton(transaction.qrCodeUrl, "URL gambar QRIS", "Salin URL gambar QRIS")}`;
     if (transaction.deeplinkUrl) {
       html += `<a href="${escapeHtml(transaction.deeplinkUrl)}" target="_blank" rel="noopener">Buka aplikasi GoPay</a>`;
     }
   } else if (transaction.billKey) {
     html = `<h6>Mandiri Bill Payment</h6>
-      <p>Kode perusahaan</p><strong>${escapeHtml(transaction.billerCode)}</strong>
-      <p>Kode pembayaran</p><strong>${escapeHtml(transaction.billKey)}</strong>`;
+      ${copyField("Kode perusahaan", transaction.billerCode, "kode perusahaan")}
+      ${copyField("Kode pembayaran", transaction.billKey, "kode pembayaran")}
+      ${amountField}`;
   } else if (transaction.vaNumber) {
     html = `<h6>${escapeHtml(transaction.bank.toUpperCase())} Virtual Account</h6>
-      <strong>${escapeHtml(transaction.vaNumber)}</strong>
-      <p>Transfer tepat sebesar ${rupiah(transaction.grossAmount)}.</p>`;
+      ${copyField("Nomor VA", transaction.vaNumber, "nomor VA")}
+      ${amountField}
+      <p>Transfer tepat sebesar jumlah di atas.</p>`;
   } else if (transaction.deeplinkUrl) {
     html = `<h6>GoPay</h6><a href="${escapeHtml(transaction.deeplinkUrl)}" target="_blank" rel="noopener">Buka aplikasi GoPay</a>`;
   } else {
@@ -425,6 +456,57 @@ function renderPaymentInstruction(transaction, expiresInMinutes) {
 
   paymentInstruction.innerHTML = html + expiry;
 }
+
+// Salin ke clipboard. Clipboard API hanya ada di konteks aman (HTTPS atau
+// localhost); selain itu pakai textarea tersembunyi dan execCommand. Textarea
+// ditaruh di dialog yang terbuka supaya bisa dipilih di dalam modal.
+async function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // Lanjut ke cara lama.
+    }
+  }
+  const area = document.createElement("textarea");
+  area.value = text;
+  area.setAttribute("readonly", "");
+  area.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none;";
+  (document.querySelector("dialog[open]") || document.body).append(area);
+  area.select();
+  area.setSelectionRange(0, text.length);
+  let copied;
+  try {
+    copied = document.execCommand("copy");
+  } catch {
+    copied = false;
+  }
+  area.remove();
+  return copied;
+}
+
+document.addEventListener("click", async (e) => {
+  const button = e.target.closest(".copy-button");
+  if (!button || !button.dataset.copy) return;
+  const label = button.querySelector(".copy-button-label");
+  button.dataset.label ??= label.textContent;
+  window.clearTimeout(Number(button.dataset.timer));
+
+  const copied = await copyText(button.dataset.copy);
+  button.focus();
+  label.textContent = copied ? "Tersalin" : "Gagal, salin manual";
+  button.classList.toggle("copied", copied);
+  const name = button.dataset.copyName.charAt(0).toUpperCase() + button.dataset.copyName.slice(1);
+  copyStatus.textContent = copied
+    ? `${name} tersalin.`
+    : `${name} gagal disalin. Pilih teksnya lalu salin manual.`;
+  button.dataset.timer = window.setTimeout(() => {
+    label.textContent = button.dataset.label;
+    button.classList.remove("copied");
+    copyStatus.textContent = "";
+  }, 1800);
+});
 
 // Status transaksi dari Midtrans, "unknown-order" kalau server menolak token
 // order, atau null kalau belum bisa dicek (koneksi putus, server sibuk).
