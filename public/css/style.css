@@ -1127,88 +1127,6 @@ footer .credit a {
   font-weight: 700;
 }
 
-/* Modal Box */
-/* Item Details */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 9999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.8);
-  align-items: center;
-}
-
-.modal-container {
-  position: relative;
-  background-color: #fefefe;
-  color: var(--bg);
-  margin: 2% auto;
-  padding: 1rem;
-  border: 1px solid #666;
-  width: 80%;
-  animation: animateModal 0.5s;
-}
-
-/* Modal Animation */
-@keyframes animateModal {
-  from {
-    top: -300px;
-    opacity: 0;
-  }
-  to {
-    top: 0;
-    opacity: 1;
-  }
-}
-
-.modal .close-icon {
-  position: absolute;
-  right: 1rem;
-}
-
-.modal-content {
-  display: flex;
-  flex: no-wrap;
-}
-
-.modal-content img {
-  width: 23rem;
-  height: 23rem;
-  object-fit: cover;
-  margin-right: 2rem;
-}
-
-.modal-content p {
-  font-size: 1.3rem;
-  line-height: 1.5rem;
-  margin-top: 1.8rem;
-}
-
-.modal .product-stars {
-  margin-top: 0.5rem;
-  padding: 0.2rem 0;
-  line-height: 1;
-}
-
-.modal .product-price {
-  font-size: 1.1rem;
-  margin-top: 0.1rem;
-}
-
-.modal-content a {
-  display: flex;
-  gap: 1rem;
-  width: 12rem;
-  background-color: var(--primary);
-  color: #fff;
-  margin-top: 2.2rem;
-  padding: 0.8rem 1.4rem;
-}
-
 /* Media Queries */
 
 /* Laptop */
@@ -1328,10 +1246,6 @@ footer .credit a {
 
   .contact .row form {
     padding-top: 0;
-  }
-
-  .modal-content {
-    flex-wrap: wrap;
   }
 }
 
@@ -1985,11 +1899,6 @@ input:focus-visible {
   display: none;
 }
 
-.modal-content img {
-  background: #1b140e;
-  border-radius: 0.6rem;
-  object-fit: contain;
-}
 
 .cat-dropdown {
   display: none;
@@ -2238,5 +2147,185 @@ input:focus-visible {
   .hero .hero-cta svg,
   .hero .hero-cta::before {
     transition: none;
+  }
+}
+
+/* ===== Modal detail menu ===== */
+/* Kartu menu yang diperbesar: permukaan espresso yang sama dengan kartu di
+   halaman menu, gambar menempel ke tepi, harga dan tombol bergaya pil. */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overflow-y: auto;
+  background: rgba(1, 1, 1, 0.8);
+}
+
+.modal-container {
+  position: relative;
+  width: min(60rem, 100%);
+  overflow: hidden;
+  border: 1px solid rgba(182, 137, 91, 0.45);
+  border-radius: 1.2rem;
+  background: #1b140e;
+  color: #f3e6d0;
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.6);
+  animation: modal-rise 0.25s ease-out;
+}
+
+@keyframes modal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+}
+
+.modal-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.modal-content img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 24rem;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: #120d09;
+}
+
+.modal .product-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem 2.8rem;
+}
+
+.modal .product-content h3 {
+  margin-right: 2.5rem;
+  color: #fff;
+  font-size: 2.4rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.modal .product-content p {
+  max-width: 34ch;
+  color: rgba(243, 230, 208, 0.82);
+  font-size: 1.4rem;
+  line-height: 1.6;
+}
+
+.modal .product-stars {
+  padding: 0;
+}
+
+.modal .product-price {
+  margin-top: 0.4rem;
+  color: var(--primary);
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.modal .modal-add-cart {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  padding: 0.9rem 2rem;
+  border-radius: 2rem;
+  background: var(--primary);
+  color: var(--bg);
+  font-size: 1.3rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.modal .modal-add-cart:hover {
+  background: #c99c6d;
+}
+
+.modal .modal-add-cart svg {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.modal .close-icon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1;
+  display: grid;
+  width: 3.6rem;
+  height: 3.6rem;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(1, 1, 1, 0.6);
+  color: #f3e6d0;
+  cursor: pointer;
+}
+
+.modal .close-icon:hover {
+  background: rgba(1, 1, 1, 0.85);
+  color: var(--primary);
+}
+
+.modal .close-icon svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-content img {
+    height: auto;
+    min-height: 0;
+  }
+
+  .modal .product-content {
+    padding: 2rem 2rem 2.4rem;
+  }
+
+  .modal .modal-add-cart {
+    align-self: stretch;
+    justify-content: center;
+    padding: 1.2rem 2rem;
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .modal {
+    padding: 1rem;
+  }
+
+  .modal .product-content h3 {
+    font-size: 2.6rem;
+  }
+
+  .modal .product-content p {
+    font-size: 1.6rem;
+  }
+
+  .modal .product-price {
+    font-size: 2.2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-container {
+    animation: none;
   }
 }
