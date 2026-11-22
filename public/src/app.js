@@ -67,6 +67,7 @@ document.addEventListener("alpine:init", () => {
     paymentReady: true,
     taxRate: 0.1,
     maxTableNumber: 30,
+    maxQuantityPerItem: 20,
     async load() {
       try {
         const response = await fetch("/api/config");
@@ -76,6 +77,7 @@ document.addEventListener("alpine:init", () => {
         this.paymentReady = data.paymentReady;
         this.taxRate = data.fees.taxRate;
         this.maxTableNumber = data.maxTableNumber;
+        this.maxQuantityPerItem = data.maxQuantityPerItem;
       } catch (error) {
         // Biarkan nilai bawaan; server tetap menghitung ulang saat checkout.
       }
@@ -127,6 +129,10 @@ document.addEventListener("alpine:init", () => {
         cartItem.name = product.name;
         cartItem.price = product.price;
         cartItem.img = product.img || "";
+        cartItem.quantity = Math.min(
+          cartItem.quantity,
+          Alpine.store("config").maxQuantityPerItem,
+        );
         return true;
       });
       this.save();
@@ -137,9 +143,11 @@ document.addEventListener("alpine:init", () => {
     quantityOf(id) {
       return this.items.find((item) => item.id === id)?.quantity || 0;
     },
-    // Tambahkan menu baru atau tambah quantity jika sudah ada (maksimal 20).
+    // Tambahkan menu baru atau tambah quantity jika sudah ada. Batasnya dari
+    // server (MAX_QUANTITY_PER_ITEM di lib/catalog.js).
     add(newItem) {
       const cartItem = this.items.find((item) => item.id === newItem.id);
+      const max = Alpine.store("config").maxQuantityPerItem;
       if (!cartItem) {
         this.items.push({
           id: newItem.id,
@@ -148,7 +156,7 @@ document.addEventListener("alpine:init", () => {
           price: newItem.price,
           quantity: 1,
         });
-      } else if (cartItem.quantity < 20) {
+      } else if (cartItem.quantity < max) {
         cartItem.quantity++;
       }
       this.save();

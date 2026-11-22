@@ -295,6 +295,7 @@ test("tanpa key Midtrans, situs tetap jalan dan checkout menjawab 503", async ()
   await withServer({ coreApi: null, serverKey: "" }, async (base) => {
     const config = await (await fetch(`${base}/api/config`)).json();
     assert.equal(config.paymentReady, false);
+    assert.equal(config.maxQuantityPerItem, require("../lib/catalog").MAX_QUANTITY_PER_ITEM);
     const products = await (await fetch(`${base}/api/products`)).json();
     assert.equal(products.products.length, 62);
     assert.equal(products.categories.length, 7);

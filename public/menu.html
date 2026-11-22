@@ -99,7 +99,7 @@
                   </span>
                 </button>
                 <strong x-text="item.quantity"></strong>
-                <button type="button" aria-label="Tambah quantity" title="Tambah quantity" @click.stop="$store.cart.add(item)" :disabled="item.quantity >= 20">
+                <button type="button" aria-label="Tambah quantity" title="Tambah quantity" @click.stop="$store.cart.add(item)" :disabled="item.quantity >= $store.config.maxQuantityPerItem">
                   <span class="cart-action-icon">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                       <use href="img/feather-sprite.svg#shopping-cart" />
