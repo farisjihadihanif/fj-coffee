@@ -280,6 +280,17 @@ test("halaman tidak punya inline script dan CDN dikunci dengan SRI", () => {
   }
 });
 
+test("tag penutup di halaman tidak terpotong", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  for (const page of ["index.html", "menu.html"]) {
+    const html = fs.readFileSync(path.join(__dirname, "..", "public", page), "utf8");
+    // "</svg" tanpa ">" membuat browser menelan tag berikutnya dan
+    // menyusun ulang DOM, misalnya link bersarang di kartu produk.
+    assert.doesNotMatch(html, /<\/[a-z0-9]+(?!\s*>)[\s<]/i, page);
+  }
+});
+
 test("tanpa key Midtrans, situs tetap jalan dan checkout menjawab 503", async () => {
   await withServer({ coreApi: null, serverKey: "" }, async (base) => {
     const config = await (await fetch(`${base}/api/config`)).json();
