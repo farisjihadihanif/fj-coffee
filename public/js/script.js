@@ -162,6 +162,46 @@ let activePayment = { orderId: "", token: "", customer: null };
 let paymentStatusTimer;
 let notificationTimer;
 
+// Order yang menunggu pembayaran disimpan di localStorage supaya bisa
+// dilanjutkan setelah halaman dimuat ulang. Nama, HP, dan email sengaja tidak
+// ikut disimpan.
+const PENDING_PAYMENT_KEY = "fj-coffee-pending-payment";
+
+function savePendingPayment(transaction, expiresInMinutes) {
+  try {
+    localStorage.setItem(
+      PENDING_PAYMENT_KEY,
+      JSON.stringify({
+        orderId: activePayment.orderId,
+        token: activePayment.token,
+        orderType: activePayment.customer.orderType,
+        tableNumber: activePayment.customer.tableNumber,
+        transaction,
+        expiresAt: Date.now() + expiresInMinutes * 60 * 1000,
+      }),
+    );
+  } catch (error) {
+    // Penyimpanan diblokir: pembayaran tetap jalan, hanya tidak bisa dilanjutkan
+    // setelah reload.
+  }
+}
+
+function loadPendingPayment() {
+  try {
+    return JSON.parse(localStorage.getItem(PENDING_PAYMENT_KEY));
+  } catch (error) {
+    return null;
+  }
+}
+
+function clearPendingPayment() {
+  try {
+    localStorage.removeItem(PENDING_PAYMENT_KEY);
+  } catch (error) {
+    // Tidak ada yang perlu dibersihkan.
+  }
+}
+
 const FAILED_STATUS_MESSAGES = {
   expire: "Waktu pembayaran habis. Silakan pilih metode pembayaran lagi.",
   cancel: "Order dibatalkan.",
@@ -306,17 +346,25 @@ async function chargePayment(paymentMethod) {
 
     activePayment.orderId = result.transaction.orderId;
     activePayment.token = result.token;
-    paymentOrderId.textContent = activePayment.orderId;
-    paymentOrderLabel.hidden = false;
-    paymentTotal.textContent = rupiah(result.transaction.grossAmount);
-
-    renderPaymentInstruction(result.transaction, result.expiresInMinutes);
-    changePaymentButton.hidden = false;
-    startPaymentStatusPolling();
+    savePendingPayment(result.transaction, result.expiresInMinutes);
+    showActivePayment(result.transaction, result.expiresInMinutes);
   } catch (error) {
     paymentInstruction.textContent = error.message;
     paymentMethodList.hidden = false;
   }
+}
+
+// Tampilkan instruksi bayar untuk order aktif lalu cek statusnya berkala.
+function showActivePayment(transaction, expiresInMinutes) {
+  showPanel("payment");
+  paymentMethodList.hidden = true;
+  paymentInstruction.hidden = false;
+  paymentOrderId.textContent = activePayment.orderId;
+  paymentOrderLabel.hidden = false;
+  paymentTotal.textContent = rupiah(transaction.grossAmount);
+  renderPaymentInstruction(transaction, expiresInMinutes);
+  changePaymentButton.hidden = false;
+  startPaymentStatusPolling();
 }
 
 function renderPaymentInstruction(transaction, expiresInMinutes) {
@@ -345,32 +393,77 @@ function renderPaymentInstruction(transaction, expiresInMinutes) {
   paymentInstruction.innerHTML = html + expiry;
 }
 
+// Status transaksi dari Midtrans, "unknown-order" kalau server menolak token
+// order, atau null kalau belum bisa dicek (koneksi putus, server sibuk).
+async function fetchPaymentStatus() {
+  try {
+    const response = await fetch(`/api/payment/${activePayment.orderId}/status`, {
+      headers: { "x-order-token": activePayment.token },
+    });
+    if (response.status === 403) return "unknown-order";
+    if (!response.ok) return null;
+    return (await response.json()).transaction.status;
+  } catch (error) {
+    return null;
+  }
+}
+
+const isPaid = (status) => ["settlement", "capture"].includes(status);
+
+function forgetActivePayment() {
+  window.clearInterval(paymentStatusTimer);
+  activePayment = { orderId: "", token: "", customer: null };
+  clearPendingPayment();
+}
+
 function startPaymentStatusPolling() {
   window.clearInterval(paymentStatusTimer);
   paymentStatusTimer = window.setInterval(async () => {
-    let status;
-    try {
-      const response = await fetch(`/api/payment/${activePayment.orderId}/status`, {
-        headers: { "x-order-token": activePayment.token },
-      });
-      if (!response.ok) return;
-      status = (await response.json()).transaction.status;
-    } catch (error) {
-      // Koneksi terputus sesaat: coba lagi di putaran berikutnya.
-      return;
-    }
-
-    if (["settlement", "capture"].includes(status)) {
+    const status = await fetchPaymentStatus();
+    if (isPaid(status)) {
       window.clearInterval(paymentStatusTimer);
       showOrderSuccess();
     } else if (FAILED_STATUS_MESSAGES[status]) {
-      window.clearInterval(paymentStatusTimer);
-      activePayment.orderId = "";
-      activePayment.token = "";
+      forgetActivePayment();
       showPaymentMethods();
       showPaymentNotification(FAILED_STATUS_MESSAGES[status], "error");
+    } else if (status === "unknown-order") {
+      forgetActivePayment();
+      showPaymentMethods();
     }
   }, 5000);
+}
+
+// Lanjutkan order yang belum selesai setelah halaman dimuat ulang.
+async function resumePendingPayment() {
+  const pending = loadPendingPayment();
+  if (!pending?.orderId || !pending?.token || !pending?.transaction) {
+    clearPendingPayment();
+    return;
+  }
+
+  activePayment = {
+    orderId: pending.orderId,
+    token: pending.token,
+    customer: { orderType: pending.orderType, tableNumber: pending.tableNumber },
+  };
+
+  const status = await fetchPaymentStatus();
+  if (isPaid(status)) {
+    openCheckoutModal();
+    showOrderSuccess();
+  } else if (FAILED_STATUS_MESSAGES[status]) {
+    forgetActivePayment();
+    showPaymentNotification(`Order ${pending.orderId}: ${FAILED_STATUS_MESSAGES[status]}`, "error");
+  } else if (status === "unknown-order") {
+    forgetActivePayment();
+  } else {
+    // Masih menunggu pembayaran, atau status belum bisa dicek: tampilkan
+    // lagi instruksinya dan terus cek.
+    const minutesLeft = Math.max(1, Math.ceil((pending.expiresAt - Date.now()) / 60000));
+    openCheckoutModal();
+    showActivePayment(pending.transaction, minutesLeft);
+  }
 }
 
 function showOrderSuccess() {
@@ -382,7 +475,7 @@ function showOrderSuccess() {
 
   orderSuccessText.textContent = `Order ${orderId} sudah dibayar. ${destination}`;
   window.Alpine.store("cart").clear();
-  activePayment = { orderId: "", token: "", customer: null };
+  forgetActivePayment();
   checkoutForm.reset();
   syncOrderType();
   showPanel("success");
@@ -407,6 +500,7 @@ async function cancelPayment() {
   const { orderId, token } = activePayment;
   activePayment.orderId = "";
   activePayment.token = "";
+  clearPendingPayment();
   if (!orderId) return;
 
   try {
@@ -418,3 +512,6 @@ async function cancelPayment() {
     // Order akan kedaluwarsa sendiri di Midtrans kalau pembatalan gagal terkirim.
   }
 }
+
+// Alpine dimuat dengan defer, jadi tunggu sampai store-nya siap.
+document.addEventListener("alpine:initialized", resumePendingPayment);
