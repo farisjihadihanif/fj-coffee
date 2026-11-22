@@ -1467,25 +1467,31 @@ input:focus-visible {
   outline-offset: 2px;
 }
 
-/* Penanda mode demo (Midtrans sandbox). Pasangan tombol keranjang di kanan
-   bawah, jadi letaknya di kiri bawah dan tidak menggeser tata letak. */
+/* Info mode demo (Midtrans sandbox): pop-up yang turun dari navbar di
+   bawah chip "Demo". Tampil saat halaman pertama dibuka. */
 .demo-badge {
-  position: fixed;
-  left: 1.5rem;
-  bottom: 1.5rem;
-  z-index: 9000;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 7%;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  max-width: min(26rem, calc(100vw - 7.5rem));
-  padding: 0.7rem 3.2rem 0.7rem 1rem;
+  gap: 2px;
+  width: min(340px, calc(100vw - 24px));
+  padding: 12px 48px 12px 16px;
   border: 1px solid var(--primary);
-  border-radius: 0.8rem;
+  border-radius: 12px;
   background: #1b140e;
   color: #f3e6d0;
-  font-size: 1rem;
+  font-size: 14px;
   line-height: 1.45;
-  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.45);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Menu, pencarian, dan keranjang juga turun dari navbar: sembunyikan pop-up
+   selama salah satunya terbuka supaya tidak saling menutupi. */
+.navbar:has(.navbar-nav.active, .search-form.active, .shopping-cart.active) .demo-badge {
+  visibility: hidden;
 }
 
 .demo-badge strong {
@@ -1534,26 +1540,37 @@ input:focus-visible {
   stroke-linejoin: round;
 }
 
-/* Setelah pop-up ditutup, hanya chip kecil ini yang tersisa. */
+/* Chip "Demo" di navbar, di samping ikon cari. Membuka dan menutup pop-up. */
 .demo-chip {
-  position: fixed;
-  left: 1.5rem;
-  bottom: 1.5rem;
-  z-index: 9000;
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  min-height: max(3.2rem, 32px);
-  padding: 0.4rem 1rem;
+  gap: 4px;
+  min-height: 30px;
+  margin: 0 6px;
+  padding: 0 10px 0 8px;
   border: 1px solid var(--primary);
   border-radius: 999px;
-  background: #1b140e;
+  background: transparent;
   color: #f3e6d0;
-  font: inherit;
-  font-size: 1.1rem;
+  font-size: 12px;
   font-weight: 600;
+  vertical-align: middle;
   cursor: pointer;
-  box-shadow: 0 0.3rem 0.8rem rgba(0, 0, 0, 0.45);
+}
+
+.navbar .navbar-extra {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .navbar-extra > a {
+  display: inline-flex;
+}
+
+.demo-chip[aria-expanded="true"],
+.demo-chip[aria-expanded="true"]:hover {
+  background: var(--primary);
+  color: var(--bg);
 }
 
 .demo-chip:hover {
@@ -1561,8 +1578,8 @@ input:focus-visible {
 }
 
 .demo-chip svg {
-  width: 1.4rem;
-  height: 1.4rem;
+  width: 14px;
+  height: 14px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2.5;
@@ -1594,14 +1611,7 @@ input:focus-visible {
 
 @media (max-width: 450px) {
   .demo-badge {
-    left: 0.75rem;
-    bottom: 1rem;
-    font-size: 1.15rem;
-  }
-
-  .demo-chip {
-    left: 0.75rem;
-    bottom: 1rem;
+    right: 12px;
   }
 }
 
@@ -2781,21 +2791,10 @@ input:focus-visible {
   color: var(--bg);
 }
 
-/* Penanda mode demo dan tombol keranjang melayang di bawah layar. Beri ruang
-   di bawah footer supaya teksnya tidak tertutup. Alpine menyembunyikan
-   penanda dengan style display: none di mode production. */
+/* Tombol keranjang melayang di kanan bawah. Beri ruang di bawah footer
+   supaya teksnya tidak tertutup. */
 footer {
-  padding-bottom: 13rem;
-}
-
-body:has(.demo-notice[style*="display: none"]) footer {
-  padding-bottom: 6rem;
-}
-
-@media (max-width: 450px) {
-  footer {
-    padding-bottom: 11rem;
-  }
+  padding-bottom: 80px;
 }
 
 /* Tautan kecil ke halaman kredit foto di footer. */
