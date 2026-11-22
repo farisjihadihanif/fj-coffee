@@ -416,7 +416,7 @@ async function chargePayment(paymentMethod) {
 
   try {
     const cart = window.Alpine.store("cart");
-    const response = await fetch("/api/payment", {
+    const response = await window.apiFetch("/api/payment", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       // Hanya id, jumlah, dan pilihan minuman yang dikirim; harga dihitung
@@ -570,7 +570,7 @@ document.addEventListener("click", async (e) => {
 // order, atau null kalau belum bisa dicek (koneksi putus, server sibuk).
 async function fetchPaymentStatus() {
   try {
-    const response = await fetch(`/api/payment/${activePayment.orderId}/status`, {
+    const response = await window.apiFetch(`/api/payment/${activePayment.orderId}/status`, {
       headers: { "x-order-token": activePayment.token },
     });
     if (response.status === 403) return "unknown-order";
@@ -677,7 +677,7 @@ async function cancelPayment() {
   if (!orderId) return;
 
   try {
-    await fetch(`/api/payment/${orderId}/cancel`, {
+    await window.apiFetch(`/api/payment/${orderId}/cancel`, {
       method: "POST",
       headers: { "x-order-token": token },
     });

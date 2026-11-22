@@ -3249,3 +3249,65 @@ footer .credit {
 .hero .hero-cta {
   white-space: nowrap;
 }
+
+/* Pesan saat server gratis sedang dibangunkan (lihat apiFetch di app.js). */
+.wake-notice {
+  position: fixed;
+  top: 84px;
+  left: 50%;
+  z-index: 10002;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: min(420px, calc(100vw - 32px));
+  padding: 12px 16px;
+  border: 1px solid var(--primary);
+  border-radius: 12px;
+  background: #1b140e;
+  color: #f3e6d0;
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: left;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  transform: translateX(-50%);
+}
+
+.wake-notice[hidden] {
+  display: none;
+}
+
+/* Di dalam dialog checkout: di bawah layar, supaya tombol tutup tetap
+   terlihat. */
+dialog .wake-notice {
+  top: auto;
+  bottom: 16px;
+}
+
+.wake-notice strong {
+  display: block;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.wake-notice-spinner {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  border: 2px solid rgba(182, 137, 91, 0.3);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: wake-spin 0.9s linear infinite;
+}
+
+@keyframes wake-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wake-notice-spinner {
+    animation: none;
+  }
+}

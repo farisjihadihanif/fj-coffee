@@ -17,6 +17,53 @@ window.ratingText = ratingText;
 // Bagian bintang ke-n (1-5) yang terisi, 0 sampai 1.
 window.starFill = (rating, star) => Math.max(0, Math.min(1, rating - star + 1));
 
+// Server gratis di Render tidur setelah 15 menit tanpa kunjungan dan butuh
+// sekitar satu menit untuk bangun. Semua panggilan API lewat apiFetch: kalau
+// ada yang belum selesai setelah 3 detik, tampilkan pesan bahwa server sedang
+// dibangunkan, lalu sembunyikan lagi begitu semua panggilan selesai.
+const WAKE_NOTICE_DELAY_MS = 3000;
+let pendingApiCalls = 0;
+let wakeTimer = 0;
+let wakeNotice = null;
+
+function showWakeNotice() {
+  if (!wakeNotice) {
+    wakeNotice = document.createElement("div");
+    wakeNotice.className = "wake-notice";
+    wakeNotice.setAttribute("role", "status");
+    const spinner = document.createElement("span");
+    spinner.className = "wake-notice-spinner";
+    spinner.setAttribute("aria-hidden", "true");
+    const text = document.createElement("p");
+    const title = document.createElement("strong");
+    title.textContent = "Membangunkan server…";
+    text.append(title, " Server gratis ini tidur kalau 15 menit tidak dipakai. Biasanya siap dalam satu menit.");
+    wakeNotice.append(spinner, text);
+  }
+  // Dialog modal (checkout) tampil di atas semua elemen lain, jadi pesan
+  // dipasang di dalam dialog yang sedang terbuka supaya tetap terlihat.
+  (document.querySelector("dialog[open]") || document.body).append(wakeNotice);
+  wakeNotice.hidden = false;
+}
+
+function hideWakeNotice() {
+  if (wakeNotice) wakeNotice.hidden = true;
+}
+
+window.apiFetch = async (url, options) => {
+  pendingApiCalls += 1;
+  if (pendingApiCalls === 1) wakeTimer = window.setTimeout(showWakeNotice, WAKE_NOTICE_DELAY_MS);
+  try {
+    return await fetch(url, options);
+  } finally {
+    pendingApiCalls -= 1;
+    if (pendingApiCalls === 0) {
+      window.clearTimeout(wakeTimer);
+      hideWakeNotice();
+    }
+  }
+};
+
 // Jalankan pendaftaran data setelah AlpineJS selesai dimuat.
 document.addEventListener("alpine:init", () => {
   // Katalog menu. Datanya diambil dari server (lib/catalog.js) supaya harga
@@ -34,7 +81,7 @@ document.addEventListener("alpine:init", () => {
     async load() {
       this.status = "loading";
       try {
-        const response = await fetch("/api/products");
+        const response = await window.apiFetch("/api/products");
         if (!response.ok) throw new Error("Gagal memuat menu.");
         const data = await response.json();
         this.categories = data.categories;
@@ -125,7 +172,7 @@ document.addEventListener("alpine:init", () => {
     maxQuantityPerItem: 20,
     async load() {
       try {
-        const response = await fetch("/api/config");
+        const response = await window.apiFetch("/api/config");
         if (!response.ok) return;
         const data = await response.json();
         this.isProduction = data.isProduction;
