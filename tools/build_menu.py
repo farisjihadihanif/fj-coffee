@@ -1,5 +1,9 @@
-"""Membuat ilustrasi menu (public/img/menu/*.svg) dan lib/catalog.js dari satu daftar.
+"""Membuat lib/catalog.js dari satu daftar menu.
 Jalankan: python tools/build_menu.py
+
+Kalau public/img/menu/<slug>.jpg ada, menu itu memakai foto tersebut dan
+kredit fotonya diambil dari tools/photo_credits.json. Kalau belum ada foto,
+skrip membuat ilustrasi SVG sebagai pengganti sementara.
 """
 import html, json, math, os, re
 
@@ -277,25 +281,47 @@ M = [
 CATEGORIES = [("coffee", "Kopi"), ("frappe", "Frappe"), ("non-coffee", "Non-kopi"), ("pastry", "Roti & Kue"), ("main", "Makanan Berat"), ("snack", "Camilan"), ("beans", "Biji Kopi")]
 BEANS = [(1, "Robusta Brazil", 45000, 4.5), (2, "America Blend", 75000, 5.0), (3, "Primo Passo", 100000, 4.6), (4, "Aceh Gayo", 150000, 4.7), (5, "Sumatra Mandailing", 90000, 4.3)]
 
+MENU_IMG_DIR = os.path.join(ROOT, "public", "img", "menu")
+
+with open(os.path.join(ROOT, "tools", "photo_credits.json"), encoding="utf-8") as f:
+    CREDITS = json.load(f)
+
+def image_for(slug, name, svg=None):
+    """Path gambar di dalam public/img/ dan kredit fotonya (None untuk ilustrasi)."""
+    if os.path.exists(os.path.join(MENU_IMG_DIR, slug + ".jpg")):
+        if slug not in CREDITS:
+            raise SystemExit(f"foto {slug}.jpg belum punya kredit di tools/photo_credits.json")
+        return f"menu/{slug}.jpg", CREDITS[slug]
+    if svg is None:
+        raise SystemExit(f"foto public/img/menu/{slug}.jpg tidak ditemukan")
+    os.makedirs(MENU_IMG_DIR, exist_ok=True)
+    with open(os.path.join(MENU_IMG_DIR, slug + ".svg"), "w", encoding="utf-8", newline="\n") as f:
+        f.write(wrap(name, svg()))
+    return f"menu/{slug}.svg", None
+
+def credit_js(credit):
+    if not credit:
+        return ""
+    fields = ", ".join(f"{k}: {json.dumps(credit[k], ensure_ascii=False)}" for k in ("author", "source", "url", "license"))
+    return f", credit: {{ {fields} }}"
+
 def main():
-    out_dir = os.path.join(ROOT, "public", "img", "menu")
-    os.makedirs(out_dir, exist_ok=True)
     lines = []
     for pid, cat, name, price, desc, kind, args in M:
         slug = slugify(name)
-        with open(os.path.join(out_dir, slug + ".svg"), "w", encoding="utf-8", newline="\n") as f:
-            f.write(wrap(name, art(kind, **args)))
-        lines.append(f'  {{ id: {pid}, category: "{cat}", name: {json.dumps(name)}, img: "menu/{slug}.svg", price: {price}, description: {json.dumps(desc, ensure_ascii=False)} }},')
+        img, credit = image_for(slug, name, lambda: art(kind, **args))
+        lines.append(f'  {{ id: {pid}, category: "{cat}", name: {json.dumps(name)}, img: "{img}", price: {price}, description: {json.dumps(desc, ensure_ascii=False)}{credit_js(credit)} }},')
     for pid, name, price, rating in BEANS:
-        lines.append(f'  {{ id: {pid}, category: "beans", name: "{name}", img: "products/{pid}.jpg", price: {price}, rating: {rating}, description: "Biji kopi 200 g." }},')
+        img, credit = image_for("beans-" + slugify(name), name)
+        lines.append(f'  {{ id: {pid}, category: "beans", name: "{name}", img: "{img}", price: {price}, rating: {rating}, description: "Biji kopi 200 g."{credit_js(credit)} }},')
     cats = "\n".join(f'  {{ id: "{c}", name: "{n}" }},' for c, n in CATEGORIES)
     js = f"""// Katalog menu FJ Coffee. Ini satu-satunya sumber harga: browser hanya
 // mengirim id dan jumlah, lalu server menghitung total dari daftar ini.
 //
-// File ini dibuat oleh tools/build_menu.py bersama ilustrasi di
-// public/img/menu/. Untuk mengubah menu, ubah daftar di skrip itu lalu
-// jalankan ulang, atau sunting langsung di sini kalau hanya mengganti harga.
-// img adalah path di dalam public/img/; ganti dengan foto asli kapan saja.
+// File ini dibuat oleh tools/build_menu.py. Untuk mengubah menu, ubah daftar
+// di skrip itu lalu jalankan ulang, atau sunting langsung di sini kalau hanya
+// mengganti harga. img adalah path di dalam public/img/; credit berisi
+// pemilik foto dan sumbernya (ditampilkan di bagian Kredit Foto).
 const categories = [
 {cats}
 ];

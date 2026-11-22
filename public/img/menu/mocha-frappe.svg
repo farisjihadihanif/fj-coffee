@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Mocha Frappe">
-<rect width="400" height="300" fill="#1b140e"/>
-<ellipse cx="200" cy="258" rx="120" ry="12" fill="#000" opacity=".35"/>
-<path d="M138 96 L262 96 L244 244 Q243 252 234 252 L166 252 Q157 252 156 244 Z" fill="#7a4a2a"/><path d="M138 96 L262 96 L244 244 Q243 252 234 252 L166 252 Q157 252 156 244 Z" fill="none" stroke="#f3e6d0" stroke-width="4" opacity=".75"/><path d="M146 96 Q150 70 176 70 Q180 50 200 50 Q220 50 224 70 Q250 70 254 96 Z" fill="#fff8ea"/><path d="M168 84 q32 -18 64 0" fill="none" stroke="#e6d6bb" stroke-width="4" stroke-linecap="round"/><path d="M160 88 q14 -16 28 -2 t28 -4 t26 6" fill="none" stroke="#3a2313" stroke-width="5" stroke-linecap="round"/><path d="M134 98 Q134 34 200 34 Q266 34 266 98 Z" fill="#fff" opacity=".10" stroke="#f3e6d0" stroke-width="3"/><rect x="194" y="6" width="11" height="120" rx="5" fill="#b6895b"/><rect x="130" y="92" width="140" height="9" rx="4" fill="#f3e6d0"/>
-</svg>

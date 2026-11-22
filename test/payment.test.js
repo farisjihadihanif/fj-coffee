@@ -312,7 +312,7 @@ test("setiap menu punya gambar yang benar-benar ada", () => {
   const fs = require("node:fs");
   const path = require("node:path");
   const { products } = require("../lib/catalog");
-  for (const product of products.filter((item) => item.category !== "beans")) {
+  for (const product of products) {
     const file = path.join(__dirname, "..", "public", "img", product.img);
     assert.ok(fs.existsSync(file), `gambar hilang: ${product.img}`);
     if (file.endsWith(".svg")) {
@@ -320,6 +320,17 @@ test("setiap menu punya gambar yang benar-benar ada", () => {
       const svg = fs.readFileSync(file, "utf8");
       assert.doesNotMatch(svg, /&(?!amp;|lt;|gt;|quot;|apos;|#)/, product.img);
     }
+  }
+});
+
+test("setiap foto menu punya kredit pemilik dan sumbernya", () => {
+  const { products } = require("../lib/catalog");
+  for (const product of products.filter((item) => item.img.endsWith(".jpg"))) {
+    const { credit } = product;
+    assert.ok(credit, `kredit foto hilang: ${product.name}`);
+    assert.ok(credit.author && credit.license, product.name);
+    assert.ok(["Pixabay", "Openverse"].includes(credit.source), product.name);
+    assert.match(credit.url, /^https:\/\//, product.name);
   }
 });
 

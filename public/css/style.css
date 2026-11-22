@@ -2447,3 +2447,49 @@ body:has(.demo-notice[style*="display: none"]) footer {
     padding-bottom: 11rem;
   }
 }
+
+/* ===== Kredit foto (menu.html) ===== */
+.photo-credits {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 7% 1rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.photo-credits h2 {
+  color: var(--primary);
+  font-size: 1.4rem;
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.8rem;
+  border-bottom: 1px solid var(--primary);
+}
+
+.photo-credits a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.photo-credits summary {
+  margin-top: 0.8rem;
+  cursor: pointer;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.photo-credits ul {
+  list-style: none;
+  margin-top: 0.8rem;
+  columns: 2 22rem;
+  column-gap: 2rem;
+}
+
+.photo-credits li {
+  break-inside: avoid;
+  padding: 0.2rem 0;
+  overflow-wrap: anywhere;
+}
+
+.photo-credit-license {
+  color: #bbb;
+}

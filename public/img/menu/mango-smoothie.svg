@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Mango Smoothie">
-<rect width="400" height="300" fill="#1b140e"/>
-<ellipse cx="200" cy="258" rx="120" ry="12" fill="#000" opacity=".35"/>
-<path d="M140 70 L260 70 L246 240 Q245 250 234 250 L166 250 Q155 250 154 240 Z" fill="#ffffff" opacity=".12"/><clipPath id="g"><path d="M140 70 L260 70 L246 240 Q245 250 234 250 L166 250 Q155 250 154 240 Z"/></clipPath><g clip-path="url(#g)"><rect x="130" y="90" width="140" height="163" fill="#f4b53c"/></g><path d="M140 70 L260 70 L246 240 Q245 250 234 250 L166 250 Q155 250 154 240 Z" fill="none" stroke="#f3e6d0" stroke-width="4" opacity=".8"/><rect x="222" y="30" width="10" height="200" rx="5" fill="#fff8ea" transform="rotate(8 227 130)"/><circle cx="262" cy="74" r="34" fill="#f29a1f"/><circle cx="262" cy="74" r="26" fill="#f9d27a"/><g stroke="#f29a1f" stroke-width="3"><line x1="262" y1="48" x2="262" y2="100"/><line x1="236" y1="74" x2="288" y2="74"/><line x1="244" y1="56" x2="280" y2="92"/><line x1="280" y1="56" x2="244" y2="92"/></g>
-</svg>

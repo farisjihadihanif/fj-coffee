@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Cold Brew">
-<rect width="400" height="300" fill="#1b140e"/>
-<ellipse cx="200" cy="258" rx="120" ry="12" fill="#000" opacity=".35"/>
-<path d="M140 70 L260 70 L246 240 Q245 250 234 250 L166 250 Q155 250 154 240 Z" fill="#ffffff" opacity=".12"/><clipPath id="g"><path d="M140 70 L260 70 L246 240 Q245 250 234 250 L166 250 Q155 250 154 240 Z"/></clipPath><g clip-path="url(#g)"><rect x="130" y="90" width="140" height="163" fill="#22130a"/></g><rect x="160" y="104" width="26" height="26" rx="5" fill="#fff" opacity=".35" transform="rotate(12 173 117)"/><rect x="205" y="118" width="26" height="26" rx="5" fill="#fff" opacity=".35" transform="rotate(-10 218 131)"/><rect x="180" y="158" width="26" height="26" rx="5" fill="#fff" opacity=".35" transform="rotate(25 193 171)"/><path d="M140 70 L260 70 L246 240 Q245 250 234 250 L166 250 Q155 250 154 240 Z" fill="none" stroke="#f3e6d0" stroke-width="4" opacity=".8"/><rect x="222" y="30" width="10" height="200" rx="5" fill="#fff8ea" transform="rotate(8 227 130)"/>
-</svg>

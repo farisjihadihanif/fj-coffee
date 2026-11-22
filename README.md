@@ -27,7 +27,7 @@ npm run lint   # memeriksa kode dengan ESLint
 |---|---|
 | `public/` | Halaman utama (`index.html`), halaman menu (`menu.html`), CSS, JavaScript, dan gambar. Hanya folder ini yang bisa diakses browser. |
 | `lib/catalog.js` | Daftar menu, kategori, harga, dan pajak. |
-| `tools/build_menu.py` | Membuat ulang `lib/catalog.js` dan ilustrasi menu di `public/img/menu/` dari satu daftar. |
+| `tools/build_menu.py` | Membuat ulang `lib/catalog.js` dari satu daftar menu, lengkap dengan path foto dan kreditnya. |
 | `lib/pricing.js` | Perhitungan total dan validasi data pemesan. |
 | `lib/app.js` | Endpoint API dan integrasi Midtrans. |
 | `server.js` | Membaca `.env` dan menjalankan server. |
@@ -35,7 +35,9 @@ npm run lint   # memeriksa kode dengan ESLint
 
 ## Menu dan gambar
 
-Menu ada di `lib/catalog.js`. Gambar tiap menu saat ini berupa ilustrasi SVG, bukan foto. Untuk memakai foto asli, simpan filenya di `public/img/menu/` lalu ubah nilai `img` menu itu di `lib/catalog.js`.
+Menu ada di `lib/catalog.js`. Setiap menu dan biji kopi memakai foto JPG 800×600 (4:3) di `public/img/menu/`, diambil dari [Pixabay](https://pixabay.com/) (Pixabay Content License) atau [Openverse](https://openverse.org/) (CC0 atau CC BY). Nama fotografer dan halaman sumber tiap foto ada di `tools/photo_credits.json` dan tampil di bagian Kredit Foto di `menu.html`.
+
+Untuk mengganti foto, simpan file baru sebagai `public/img/menu/<slug>.jpg`, isi kreditnya di `tools/photo_credits.json`, lalu jalankan `python tools/build_menu.py`. Menu baru yang belum punya foto otomatis mendapat ilustrasi SVG.
 
 Navbar, keranjang, dan form checkout ditulis dua kali, di `index.html` dan `menu.html`. Kalau mengubah salah satunya, ubah juga yang lain. Isi keranjang disimpan di localStorage supaya tidak hilang saat pindah halaman.
 
