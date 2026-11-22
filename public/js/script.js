@@ -72,7 +72,55 @@ if (itemDetailModal) {
   const modalStars = itemDetailModal.querySelector(".product-content .product-stars");
   const modalPrice = itemDetailModal.querySelector(".product-content .product-price");
   const modalAddCartButton = itemDetailModal.querySelector(".modal-add-cart");
+  const modalOptions = itemDetailModal.querySelector(".drink-options");
   let modalProduct = null;
+  let modalChoice = null;
+
+  // Pilihan minuman sebagai tombol radio per kelompok. Suhu hanya
+  // menampilkan yang tersedia untuk menu itu.
+  const renderDrinkOptions = () => {
+    const menu = window.Alpine.store("menu");
+    modalChoice = menu.defaultOptions(modalProduct);
+    modalOptions.hidden = !modalChoice;
+    if (!modalChoice) {
+      modalOptions.innerHTML = "";
+      return;
+    }
+    modalOptions.innerHTML = ["temperature", "size", "sugar"]
+      .map((group) => {
+        const { label, choices } = menu.drinkOptions[group];
+        const available =
+          group === "temperature"
+            ? choices.filter((item) => modalProduct.options.temperature.includes(item.id))
+            : choices;
+        const radios = available
+          .map(
+            (item) => `<label class="option-choice">
+              <input type="radio" name="drink-${group}" value="${escapeHtml(item.id)}"${item.id === modalChoice[group] ? " checked" : ""} />
+              <span>${escapeHtml(item.name)}${item.price ? ` <small>+${escapeHtml(rupiah(item.price))}</small>` : ""}</span>
+            </label>`,
+          )
+          .join("");
+        return `<fieldset class="option-group" data-group="${group}">
+            <legend>${escapeHtml(label)}</legend>
+            <div class="option-choices">${radios}</div>
+          </fieldset>`;
+      })
+      .join("");
+  };
+
+  const updateModalPrice = () => {
+    modalPrice.textContent = rupiah(
+      window.Alpine.store("menu").unitPrice(modalProduct, modalChoice),
+    );
+  };
+
+  modalOptions.addEventListener("change", (e) => {
+    const group = e.target.closest(".option-group")?.dataset.group;
+    if (!group || !modalChoice) return;
+    modalChoice[group] = e.target.value;
+    updateModalPrice();
+  });
 
   // <dialog> dengan showModal(): Escape, fokus yang terkunci di dalam modal,
   // dan kembalinya fokus ke pemicu ditangani browser.
@@ -98,7 +146,8 @@ if (itemDetailModal) {
     modalImage.alt = modalProduct.name;
     modalTitle.textContent = modalProduct.name;
     modalDescription.textContent = modalProduct.description;
-    modalPrice.textContent = rupiah(modalProduct.price);
+    renderDrinkOptions();
+    updateModalPrice();
 
     // Bintang hanya untuk menu yang punya rating.
     modalStars.hidden = !modalProduct.rating;
@@ -119,7 +168,9 @@ if (itemDetailModal) {
 
   modalAddCartButton.onclick = (e) => {
     e.preventDefault();
-    if (modalProduct) window.Alpine.store("cart").add(modalProduct);
+    if (modalProduct) {
+      window.Alpine.store("cart").add(modalProduct, modalChoice && { ...modalChoice });
+    }
     closeModal();
   };
 
@@ -366,9 +417,14 @@ async function chargePayment(paymentMethod) {
     const response = await fetch("/api/payment", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      // Hanya id dan jumlah yang dikirim; harga dihitung di server.
+      // Hanya id, jumlah, dan pilihan minuman yang dikirim; harga dihitung
+      // di server.
       body: JSON.stringify({
-        items: cart.items.map((item) => ({ id: item.id, quantity: item.quantity })),
+        items: cart.items.map((item) => ({
+          id: item.id,
+          quantity: item.quantity,
+          ...(item.options ? { options: item.options } : {}),
+        })),
         customer: activePayment.customer,
         paymentMethod,
       }),

@@ -17,6 +17,12 @@
     "url": "https://pixabay.com/photos/coffee-cafe-hot-mug-cup-white-2589691/",
     "license": "Pixabay Content License"
   },
+  "aren-oat-latte": {
+    "author": "husien_pro",
+    "source": "Pixabay",
+    "url": "https://pixabay.com/photos/iced-coffee-cold-drink-coffee-bean-10260387/",
+    "license": "Pixabay Content License"
+  },
   "beans-aceh-gayo": {
     "author": "willyvh",
     "source": "Pixabay",
@@ -47,10 +53,28 @@
     "url": "https://pixabay.com/photos/coffee-coffee-beans-roasted-coffee-660394/",
     "license": "Pixabay Content License"
   },
+  "beans-toraja-sapan": {
+    "author": "NickyPe",
+    "source": "Pixabay",
+    "url": "https://pixabay.com/photos/coffee-beans-coffee-6603499/",
+    "license": "Pixabay Content License"
+  },
   "blueberry-muffin": {
     "author": "tehzeebkazmii",
     "source": "Pixabay",
     "url": "https://pixabay.com/photos/muffin-blueberry-sugar-pastry-food-10346608/",
+    "license": "Pixabay Content License"
+  },
+  "bola-singkong-keju": {
+    "author": "diegotoralabad",
+    "source": "Pixabay",
+    "url": "https://pixabay.com/photos/ecuador-south-america-food-potato-7467030/",
+    "license": "Pixabay Content License"
+  },
+  "butterscotch-latte": {
+    "author": "Engin_Akyurt",
+    "source": "Pixabay",
+    "url": "https://pixabay.com/photos/coffee-workspace-cafe-drink-2242213/",
     "license": "Pixabay Content License"
   },
   "caffe-latte": {
@@ -143,6 +167,12 @@
     "url": "https://pixabay.com/photos/bread-croissant-food-breakfast-cup-18987/",
     "license": "Pixabay Content License"
   },
+  "dalgona-kopi-susu": {
+    "author": "katetrysh",
+    "source": "Pixabay",
+    "url": "https://pixabay.com/photos/almond-milk-beverage-brown-cafe-8952842/",
+    "license": "Pixabay Content License"
+  },
   "donat-cokelat": {
     "author": "ThorstenF",
     "source": "Pixabay",
@@ -167,6 +197,12 @@
     "url": "https://pixabay.com/photos/ice-coffee-iced-coffee-coffee-drink-4988704/",
     "license": "Pixabay Content License"
   },
+  "japanese-iced-coffee": {
+    "author": "Brendin_Hoffman",
+    "source": "Pixabay",
+    "url": "https://pixabay.com/photos/iced-coffee-coffee-beans-drink-5703345/",
+    "license": "Pixabay Content License"
+  },
   "java-chip-frappe": {
     "author": "rajdeepcraft",
     "source": "Pixabay",
@@ -183,6 +219,24 @@
     "author": "_magdita",
     "source": "Pixabay",
     "url": "https://pixabay.com/photos/coffee-cafe-lovers-focus-ethiopia-7574762/",
+    "license": "Pixabay Content License"
+  },
+  "kopi-susu-jahe": {
+    "author": "Pexels",
+    "source": "Pixabay",
+    "url": "https://pixabay.com/photos/coffee-cup-wallpaper-drink-1839133/",
+    "license": "Pixabay Content License"
+  },
+  "kopi-susu-rum": {
+    "author": "shixugang",
+    "source": "Pixabay",
+    "url": "https://pixabay.com/photos/coffee-milk-sugar-cup-of-coffee-563797/",
+    "license": "Pixabay Content License"
+  },
+  "kopi-tubruk": {
+    "author": "cocoparisienne",
+    "source": "Pixabay",
+    "url": "https://pixabay.com/photos/coffee-coffee-cup-cup-drink-beans-2714970/",
     "license": "Pixabay Content License"
   },
   "kwetiau-goreng-sapi": {
@@ -335,10 +389,34 @@
     "url": "https://pixabay.com/photos/bacon-bread-breakfast-delicious-2178770/",
     "license": "Pixabay Content License"
   },
+  "spaghetti-bolognese": {
+    "author": "ayindeabdulmajeed44",
+    "source": "Pixabay",
+    "url": "https://pixabay.com/photos/spaghetti-pasta-cooking-kitchen-6639970/",
+    "license": "Pixabay Content License"
+  },
+  "spaghetti-carbonara": {
+    "author": "Wow_Pho",
+    "source": "Pixabay",
+    "url": "https://pixabay.com/photos/pasta-carbonara-spaghetti-712664/",
+    "license": "Pixabay Content License"
+  },
+  "strawberry-cream-frappe": {
+    "author": "RitaE",
+    "source": "Pixabay",
+    "url": "https://pixabay.com/photos/strawberry-dessert-fruit-berry-3304967/",
+    "license": "Pixabay Content License"
+  },
   "strawberry-smoothie": {
     "author": "Ajale",
     "source": "Pixabay",
     "url": "https://pixabay.com/photos/smoothie-fruit-a-drink-drink-1444371/",
+    "license": "Pixabay Content License"
+  },
+  "tahu-goreng": {
+    "author": "focusonpc",
+    "source": "Pixabay",
+    "url": "https://pixabay.com/photos/meal-delicious-fried-tofu-3167100/",
     "license": "Pixabay Content License"
   },
   "taro-latte": {

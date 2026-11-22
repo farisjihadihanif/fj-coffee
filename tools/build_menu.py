@@ -214,30 +214,39 @@ RAW = {
 
 # (id, kategori, nama, harga, deskripsi, jenis gambar, argumen)
 M = [
- (101, "coffee", "Espresso", 18000, "Satu shot, pekat dan singkat.", "hot", dict(liquid=DARK, small=True, art="crema")),
- (102, "coffee", "Americano", 25000, "Espresso dengan air panas atau es.", "hot", dict(liquid="#22130a")),
+ (105, "signature", "Kopi Susu Gula Aren", 25000, "Kopi susu dengan gula aren.", "glass", dict(layers=[(92, COFFEE), (142, MILK), (192, "#4a2a12")], straw=P)),
+ (501, "signature", "Kopi Susu Jahe", 28000, "Kopi susu dengan sirup jahe.", "hot", dict(liquid="#c9a070", art="leaf")),
+ (502, "signature", "Butterscotch Latte", 34000, "Latte dengan saus butterscotch.", "hot", dict(liquid="#d9b06a", art="drizzle")),
+ (503, "signature", "Aren Oat Latte", 32000, "Espresso, susu oat, dan gula aren.", "glass", dict(layers=[(92, COFFEE), (142, "#efe3cc"), (192, "#4a2a12")], straw=P)),
+ (504, "signature", "Dalgona Kopi Susu", 32000, "Susu dingin dengan krim kopi kocok di atasnya.", "glass", dict(layers=[(84, "#c98a4b"), (130, "#fff8ea")], straw=None)),
+ (505, "signature", "Kopi Susu Rum", 30000, "Kopi susu dengan sirup rasa rum, tanpa alkohol.", "hot", dict(liquid="#b07a46", art="heart")),
+
+ (101, "black-coffee", "Espresso", 18000, "Satu shot, pekat dan singkat.", "hot", dict(liquid=DARK, small=True, art="crema")),
+ (102, "black-coffee", "Americano", 25000, "Espresso dengan air.", "hot", dict(liquid="#22130a")),
  (103, "coffee", "Cappuccino", 32000, "Espresso, susu, dan busa tebal.", "hot", dict(liquid=MILK, art="heart")),
  (104, "coffee", "Caffe Latte", 32000, "Espresso dengan susu lembut.", "hot", dict(liquid="#d9b88a", art="leaf")),
  (107, "coffee", "Flat White", 34000, "Dua shot ristretto dengan susu tipis.", "hot", dict(liquid="#c9a070", art="leaf", small=True)),
  (108, "coffee", "Caramel Macchiato", 38000, "Susu vanila, espresso, dan saus karamel.", "hot", dict(liquid=MILK, art="drizzle")),
  (109, "coffee", "Caffe Mocha", 38000, "Espresso, cokelat, dan susu.", "hot", dict(liquid="#5a341a", art="heart")),
- (110, "coffee", "Vanilla Latte", 36000, "Latte dengan sirup vanila, panas atau es.", "glass", dict(layers=[(84, "#fff8ea"), (108, COFFEE), (136, MILK)], iced=False)),
- (111, "coffee", "Hazelnut Latte", 36000, "Latte dengan sirup hazelnut, disajikan dingin.", "glass", dict(layers=[(90, COFFEE), (140, "#d9b88a")], straw=P)),
- (112, "coffee", "Cold Brew", 30000, "Kopi seduh dingin 12 jam.", "glass", dict(layers=[(90, "#22130a")], straw="#fff8ea")),
- (105, "coffee", "Kopi Susu Gula Aren", 25000, "Es kopi susu dengan gula aren.", "glass", dict(layers=[(92, COFFEE), (142, MILK), (192, "#4a2a12")], straw=P)),
- (106, "coffee", "V60 Aceh Gayo", 30000, "Seduh manual, disajikan panas.", "raw", dict(svg=RAW["v60"])),
- (113, "coffee", "Affogato", 32000, "Es krim vanila disiram espresso.", "raw", dict(svg=RAW["affogato"])),
+ (110, "coffee", "Vanilla Latte", 36000, "Latte dengan sirup vanila.", "glass", dict(layers=[(84, "#fff8ea"), (108, COFFEE), (136, MILK)], iced=False)),
+ (111, "coffee", "Hazelnut Latte", 36000, "Latte dengan sirup hazelnut.", "glass", dict(layers=[(90, COFFEE), (140, "#d9b88a")], straw=P)),
+ (112, "black-coffee", "Cold Brew", 30000, "Kopi seduh dingin 12 jam.", "glass", dict(layers=[(90, "#22130a")], straw="#fff8ea")),
+ (106, "black-coffee", "V60 Aceh Gayo", 30000, "Seduh manual dengan V60.", "raw", dict(svg=RAW["v60"])),
+ (113, "dessert", "Affogato", 32000, "Es krim vanila disiram espresso.", "raw", dict(svg=RAW["affogato"])),
+ (114, "black-coffee", "Kopi Tubruk", 18000, "Kopi bubuk diseduh langsung di cangkir, gaya tradisional.", "hot", dict(liquid="#22130a")),
+ (115, "black-coffee", "Japanese Iced Coffee", 30000, "Kopi seduh manual langsung di atas es.", "glass", dict(layers=[(90, "#22130a")], straw=None)),
 
  (151, "frappe", "Caramel Frappe", 42000, "Kopi blended dengan karamel dan krim kocok.", "frappe", dict(drink="#c9a070", drizzle="#c9822f")),
  (152, "frappe", "Mocha Frappe", 42000, "Kopi blended dengan cokelat.", "frappe", dict(drink="#7a4a2a", drizzle="#3a2313")),
  (153, "frappe", "Java Chip Frappe", 45000, "Mocha blended dengan kepingan cokelat.", "frappe", dict(drink="#8a5a36", drizzle="#3a2313", chips="#2d1a0c")),
  (154, "frappe", "Matcha Frappe", 45000, "Matcha blended tanpa kopi.", "frappe", dict(drink="#9cc56a")),
  (155, "frappe", "Cookies & Cream Frappe", 45000, "Vanila blended dengan remahan biskuit cokelat.", "frappe", dict(drink="#ece3d2", chips="#2d1a0c")),
+ (156, "frappe", "Strawberry Cream Frappe", 42000, "Stroberi dan susu blended dengan krim kocok, tanpa kopi.", "frappe", dict(drink="#f2a7b5", drizzle="#d1344f")),
 
- (201, "non-coffee", "Matcha Latte", 35000, "Matcha dengan susu, panas atau es.", "hot", dict(liquid="#8fae5a", art="leaf")),
+ (201, "non-coffee", "Matcha Latte", 35000, "Matcha dengan susu.", "hot", dict(liquid="#8fae5a", art="leaf")),
  (202, "non-coffee", "Signature Chocolate", 35000, "Cokelat pekat dengan marshmallow.", "hot", dict(liquid="#3b1d10", body="#c96f4a", art="marshmallow")),
  (204, "non-coffee", "Red Velvet Latte", 35000, "Red velvet dengan susu.", "hot", dict(liquid="#c0475a", art="leaf")),
- (205, "non-coffee", "Taro Latte", 33000, "Taro dengan susu, disajikan dingin.", "glass", dict(layers=[(90, "#b79ad6"), (170, "#e9dcf4")], straw="#fff8ea")),
+ (205, "non-coffee", "Taro Latte", 33000, "Taro dengan susu.", "glass", dict(layers=[(90, "#b79ad6"), (170, "#e9dcf4")], straw="#fff8ea")),
  (206, "non-coffee", "Chai Tea Latte", 33000, "Teh rempah dengan susu.", "hot", dict(liquid="#c98f5a", art="drizzle")),
  (203, "non-coffee", "Teh Lemon", 22000, "Teh hitam dengan perasan lemon.", "glass", dict(layers=[(100, "#c9722a")], straw=CREAM, garnish=fruit("#f4d23c", "#fbe98a"))),
  (207, "non-coffee", "Lychee Tea", 28000, "Teh dingin dengan buah leci.", "glass", dict(layers=[(100, "#e8b27a")], straw=CREAM, garnish=dots("#fff8ea", [(176, 214), (208, 226), (228, 206)], 12))),
@@ -248,22 +257,22 @@ M = [
  (301, "pastry", "Croissant Butter", 24000, "Dipanggang ulang sebelum disajikan.", "raw", dict(svg=RAW["croissant"])),
  (304, "pastry", "Almond Croissant", 30000, "Croissant isi krim almon.", "raw", dict(svg=RAW["almond-croissant"])),
  (305, "pastry", "Cinnamon Roll", 28000, "Roti gulung kayu manis dengan glasir.", "raw", dict(svg=RAW["cinnamon-roll"])),
- (306, "pastry", "Blueberry Muffin", 26000, "Muffin dengan blueberry.", "raw", dict(svg=RAW["muffin"])),
- (307, "pastry", "Chocolate Chip Cookie", 18000, "Kukis besar dengan kepingan cokelat.", "raw", dict(svg=RAW["cookie"])),
+ (306, "dessert", "Blueberry Muffin", 26000, "Muffin dengan blueberry.", "raw", dict(svg=RAW["muffin"])),
+ (307, "dessert", "Chocolate Chip Cookie", 18000, "Kukis besar dengan kepingan cokelat.", "raw", dict(svg=RAW["cookie"])),
  (308, "pastry", "Donat Cokelat", 18000, "Donat dengan glasir cokelat.", "raw", dict(svg=RAW["donut"])),
- (309, "pastry", "Cheesecake", 38000, "Satu potong, dengan dasar biskuit.", "raw", dict(svg=RAW["cheesecake"])),
- (310, "pastry", "Chocolate Cake", 36000, "Satu potong kue cokelat berlapis.", "raw", dict(svg=RAW["chocolate-cake"])),
- (311, "pastry", "Tiramisu", 38000, "Satu potong, dengan taburan kakao.", "raw", dict(svg=RAW["tiramisu"])),
+ (309, "dessert", "Cheesecake", 38000, "Satu potong, dengan dasar biskuit.", "raw", dict(svg=RAW["cheesecake"])),
+ (310, "dessert", "Chocolate Cake", 36000, "Satu potong kue cokelat berlapis.", "raw", dict(svg=RAW["chocolate-cake"])),
+ (311, "dessert", "Tiramisu", 38000, "Satu potong, dengan taburan kakao.", "raw", dict(svg=RAW["tiramisu"])),
  (312, "pastry", "Smoked Beef & Cheese Sandwich", 38000, "Roti panggang isi daging asap dan keju.", "raw", dict(svg=RAW["sandwich"])),
  (302, "pastry", "Roti Bakar Cokelat Keju", 22000, "Dua tangkup, potong empat.", "raw", dict(svg=RAW["toast"])),
 
  (401, "main", "Nasi Goreng Seafood", 38000, "Nasi goreng dengan udang, cumi, dan telur.", "rice", dict(color="#c9822f", toppings=SEAFOOD)),
  (402, "main", "Nasi Goreng Ayam", 32000, "Nasi goreng dengan ayam suwir dan telur.", "rice", dict(color="#c9822f", toppings=CHICKEN)),
  (403, "main", "Nasi Goreng Cabe Hijau", 35000, "Nasi goreng pedas dengan cabai hijau.", "rice", dict(color="#b9a04a", toppings=CHILI)),
- (404, "main", "Mie Goreng Seafood", 36000, "Mi goreng dengan udang dan cumi.", "noodles", dict(color="#d9a04a", toppings=SEAFOOD + GREENS)),
- (405, "main", "Mie Goreng Ayam", 32000, "Mi goreng dengan ayam dan sayuran.", "noodles", dict(color="#d9a04a", toppings=CHICKEN + GREENS)),
- (406, "main", "Kwetiau Goreng Sapi", 38000, "Kwetiau goreng dengan irisan sapi.", "noodles", dict(color="#e6c79a", wide=True, sauce="#8a5a2b", toppings=BEEF + GREENS)),
- (407, "main", "Kwetiau Siram Seafood", 38000, "Kwetiau dengan kuah kental seafood.", "noodles", dict(color="#f3e6d0", wide=True, sauce="#d9b06a", toppings=SEAFOOD + GREENS)),
+ (404, "noodles", "Mie Goreng Seafood", 36000, "Mi goreng dengan udang dan cumi.", "noodles", dict(color="#d9a04a", toppings=SEAFOOD + GREENS)),
+ (405, "noodles", "Mie Goreng Ayam", 32000, "Mi goreng dengan ayam dan sayuran.", "noodles", dict(color="#d9a04a", toppings=CHICKEN + GREENS)),
+ (406, "noodles", "Kwetiau Goreng Sapi", 38000, "Kwetiau goreng dengan irisan sapi.", "noodles", dict(color="#e6c79a", wide=True, sauce="#8a5a2b", toppings=BEEF + GREENS)),
+ (407, "noodles", "Kwetiau Siram Seafood", 38000, "Kwetiau dengan kuah kental seafood.", "noodles", dict(color="#f3e6d0", wide=True, sauce="#d9b06a", toppings=SEAFOOD + GREENS)),
  (408, "main", "Nasi Ayam Mentega", 40000, "Ayam goreng saus mentega dengan nasi.", "raw", dict(svg=RAW["ayam-mentega"])),
  (409, "main", "Nasi Ayam Lada Hitam", 40000, "Ayam saus lada hitam dengan nasi.", "raw", dict(svg=RAW["ayam-lada"])),
  (410, "main", "Nasi Sapi Lada Hitam", 45000, "Sapi saus lada hitam dengan nasi.", "raw", dict(svg=RAW["sapi-lada"])),
@@ -271,15 +280,32 @@ M = [
  (412, "main", "Nasi Cap Cay Seafood", 38000, "Tumis sayuran dan seafood dengan nasi.", "raw", dict(svg=RAW["capcay"])),
  (413, "main", "Sapo Tahu Seafood", 40000, "Tahu dan seafood dalam kuah kental, disajikan di claypot.", "raw", dict(svg=RAW["sapo-tahu"])),
  (414, "main", "Nasi Fuyunghai", 35000, "Telur dadar isi dengan saus asam manis.", "raw", dict(svg=RAW["fuyunghai"])),
+ (415, "noodles", "Spaghetti Bolognese", 42000, "Spaghetti dengan saus daging sapi dan tomat.", "noodles", dict(color="#e6c06a", sauce="#b5432a", toppings=BEEF)),
+ (416, "noodles", "Spaghetti Carbonara", 45000, "Spaghetti dengan saus krim, keju, dan daging asap.", "noodles", dict(color="#f1d98a", sauce="#f6ecd0", toppings=GREENS)),
 
  (303, "snack", "Kentang Goreng", 22000, "Dengan saus sambal dan mayones.", "raw", dict(svg=RAW["fries"])),
  (351, "snack", "Chicken Wings", 32000, "Enam potong sayap ayam pedas manis.", "raw", dict(svg=RAW["wings"])),
  (352, "snack", "Onion Rings", 24000, "Bawang bombai goreng tepung.", "raw", dict(svg=RAW["onion-rings"])),
  (353, "snack", "Pisang Goreng Keju", 22000, "Pisang goreng dengan parutan keju.", "raw", dict(svg=RAW["pisang"])),
+ (354, "snack", "Bola Singkong Keju", 22000, "Singkong isi keju, digoreng renyah.", "raw", dict(svg=RAW["pisang"])),
+ (355, "snack", "Tahu Goreng", 20000, "Tahu goreng renyah dengan sambal kecap.", "raw", dict(svg=RAW["fries"])),
 ]
 
-CATEGORIES = [("coffee", "Kopi"), ("frappe", "Frappe"), ("non-coffee", "Non-kopi"), ("pastry", "Roti & Kue"), ("main", "Makanan Berat"), ("snack", "Camilan"), ("beans", "Biji Kopi")]
-BEANS = [(1, "Robusta Brazil", 45000, 4.5), (2, "America Blend", 75000, 5.0), (3, "Primo Passo", 100000, 4.6), (4, "Aceh Gayo", 150000, 4.7), (5, "Sumatra Mandailing", 90000, 4.3)]
+CATEGORIES = [("signature", "Signature"), ("coffee", "Kopi Susu"), ("black-coffee", "Kopi Hitam"), ("frappe", "Frappe"), ("non-coffee", "Non-kopi"), ("pastry", "Roti & Pastry"), ("dessert", "Kue & Dessert"), ("main", "Nasi & Lauk"), ("noodles", "Mie & Pasta"), ("snack", "Camilan"), ("beans", "Biji Kopi")]
+
+# Kategori minuman: menunya punya pilihan suhu, ukuran, dan tingkat gula.
+DRINK_CATEGORIES = {"signature", "coffee", "black-coffee", "frappe", "non-coffee"}
+# Suhu yang tersedia kalau bukan panas dan es. Frappe selalu es.
+TEMPERATURES = {101: ["hot"], 106: ["hot"], 114: ["hot"], 112: ["iced"], 115: ["iced"], 504: ["iced"],
+                207: ["iced"], 208: ["iced"], 209: ["iced"], 210: ["iced"]}
+
+def temperatures_for(pid, cat):
+    if cat not in DRINK_CATEGORIES:
+        return None
+    if cat == "frappe":
+        return ["iced"]
+    return TEMPERATURES.get(pid, ["hot", "iced"])
+BEANS = [(1, "Robusta Brazil", 45000, 4.5), (2, "America Blend", 75000, 5.0), (3, "Primo Passo", 100000, 4.6), (4, "Aceh Gayo", 150000, 4.7), (5, "Sumatra Mandailing", 90000, 4.3), (6, "Toraja Sapan", 120000, 4.6)]
 
 MENU_IMG_DIR = os.path.join(ROOT, "public", "img", "menu")
 
@@ -310,18 +336,22 @@ def main():
     for pid, cat, name, price, desc, kind, args in M:
         slug = slugify(name)
         img, credit = image_for(slug, name, lambda: art(kind, **args))
-        lines.append(f'  {{ id: {pid}, category: "{cat}", name: {json.dumps(name)}, img: "{img}", price: {price}, description: {json.dumps(desc, ensure_ascii=False)}{credit_js(credit)} }},')
+        temps = temperatures_for(pid, cat)
+        opts = f", options: {{ temperature: {json.dumps(temps)} }}" if temps else ""
+        lines.append(f'  {{ id: {pid}, category: "{cat}", name: {json.dumps(name)}, img: "{img}", price: {price}, description: {json.dumps(desc, ensure_ascii=False)}{opts}{credit_js(credit)} }},')
     for pid, name, price, rating in BEANS:
         img, credit = image_for("beans-" + slugify(name), name)
         lines.append(f'  {{ id: {pid}, category: "beans", name: "{name}", img: "{img}", price: {price}, rating: {rating}, description: "Biji kopi 200 g."{credit_js(credit)} }},')
     cats = "\n".join(f'  {{ id: "{c}", name: "{n}" }},' for c, n in CATEGORIES)
     js = f"""// Katalog menu FJ Coffee. Ini satu-satunya sumber harga: browser hanya
-// mengirim id dan jumlah, lalu server menghitung total dari daftar ini.
+// mengirim id, jumlah, dan pilihan minuman, lalu server menghitung total dari
+// daftar ini.
 //
 // File ini dibuat oleh tools/build_menu.py. Untuk mengubah menu, ubah daftar
 // di skrip itu lalu jalankan ulang, atau sunting langsung di sini kalau hanya
 // mengganti harga. img adalah path di dalam public/img/; credit berisi
-// pemilik foto dan sumbernya (ditampilkan di bagian Kredit Foto).
+// pemilik foto dan sumbernya (ditampilkan di bagian Kredit Foto). Menu
+// minuman punya options.temperature: suhu yang bisa dipilih.
 const categories = [
 {cats}
 ];
@@ -330,13 +360,50 @@ const products = [
 {chr(10).join(lines)}
 ];
 
+// Pilihan untuk menu minuman. Pilihan pertama adalah bawaan, kecuali suhu:
+// bawaannya es kalau tersedia. price adalah tambahan harga per gelas.
+const drinkOptions = {{
+  temperature: {{
+    label: "Suhu",
+    choices: [
+      {{ id: "hot", name: "Panas" }},
+      {{ id: "iced", name: "Es" }},
+    ],
+  }},
+  size: {{
+    label: "Ukuran",
+    choices: [
+      {{ id: "regular", name: "Regular", price: 0 }},
+      {{ id: "large", name: "Large", price: 5000 }},
+    ],
+  }},
+  sugar: {{
+    label: "Tingkat gula",
+    choices: [
+      {{ id: "normal", name: "Gula normal" }},
+      {{ id: "less", name: "Kurang manis" }},
+      {{ id: "none", name: "Tanpa gula" }},
+    ],
+  }},
+}};
+
 // Pajak restoran yang ditambahkan ke setiap pesanan.
 const fees = {{ taxRate: 0.1 }};
 
 const MAX_QUANTITY_PER_ITEM = 20;
+// Satu menu dengan pilihan berbeda menjadi baris terpisah di keranjang.
+const MAX_CART_LINES = 40;
 const MAX_TABLE_NUMBER = 30;
 
-module.exports = {{ categories, products, fees, MAX_QUANTITY_PER_ITEM, MAX_TABLE_NUMBER }};
+module.exports = {{
+  categories,
+  products,
+  drinkOptions,
+  fees,
+  MAX_QUANTITY_PER_ITEM,
+  MAX_CART_LINES,
+  MAX_TABLE_NUMBER,
+}};
 """
     with open(os.path.join(ROOT, "lib", "catalog.js"), "w", encoding="utf-8", newline="\n") as f:
         f.write(js)

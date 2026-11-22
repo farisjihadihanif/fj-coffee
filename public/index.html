@@ -76,19 +76,20 @@
 
       <!-- shopping cart start -->
       <div class="shopping-cart">
-        <template x-for="item in $store.cart.items" :key="item.id">
+        <template x-for="item in $store.cart.items" :key="item.key">
           <div class="cart-item">
             <img x-show="item.img" :src="item.img ? `img/${item.img}` : ''" :alt="item.name" />
             <span class="cart-thumb" x-show="!item.img" x-text="item.name.charAt(0)" aria-hidden="true"></span>
             <div class="cart-product-info">
               <h3 x-text="item.name"></h3>
+              <p class="cart-item-options" x-show="item.options" x-text="$store.menu.optionsLabel(item.options)"></p>
             </div>
             <div class="cart-column cart-price">
               <strong x-text="rupiah(item.price)"></strong>
             </div>
             <div class="cart-column cart-quantity">
               <div class="quantity-controls">
-                <button type="button" class="qty-step" aria-label="Kurangi jumlah" @click.stop="$store.cart.remove(item.id)">
+                <button type="button" class="qty-step" aria-label="Kurangi jumlah" @click.stop="$store.cart.remove(item.key)">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><use href="img/feather-sprite.svg#minus" /></svg>
                 </button>
                 <strong class="qty-value" x-text="item.quantity" aria-live="polite"></strong>
@@ -100,7 +101,7 @@
             <div class="cart-column cart-total">
               <strong x-text="rupiah(item.price * item.quantity)"></strong>
             </div>
-            <button type="button" class="remove-cart-item" aria-label="Hapus produk" title="Hapus produk" @click.stop="$store.cart.removeAll(item.id)">
+            <button type="button" class="remove-cart-item" aria-label="Hapus produk" title="Hapus produk" @click.stop="$store.cart.removeAll(item.key)">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <use href="img/feather-sprite.svg#trash-2" />
               </svg>
@@ -439,6 +440,7 @@
             <h3 id="item-detail-title"></h3>
             <div class="product-stars"></div>
             <p></p>
+            <div class="drink-options" hidden></div>
             <div class="product-price"></div>
             <button type="button" class="modal-add-cart" data-keep-cart>
               <i data-feather="shopping-cart"></i>

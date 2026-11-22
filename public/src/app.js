@@ -16,6 +16,8 @@ document.addEventListener("alpine:init", () => {
   Alpine.store("menu", {
     categories: [],
     items: [],
+    // Pilihan suhu, ukuran, dan gula untuk menu minuman (lib/catalog.js).
+    drinkOptions: null,
     // Kata kunci bisa datang dari halaman lain lewat menu.html?q=...
     query: new URLSearchParams(window.location.search).get("q") || "",
     activeCategory: "all",
@@ -28,6 +30,7 @@ document.addEventListener("alpine:init", () => {
         const data = await response.json();
         this.categories = data.categories;
         this.items = data.products;
+        this.drinkOptions = data.drinkOptions;
         this.status = "ready";
         Alpine.store("cart").syncWithCatalog(this.items);
       } catch (error) {
@@ -53,6 +56,41 @@ document.addEventListener("alpine:init", () => {
           ),
         }))
         .filter((group) => group.items.length);
+    },
+    // Pilihan bawaan minuman: es kalau tersedia, Regular, gula normal.
+    defaultOptions(product) {
+      if (!product?.options || !this.drinkOptions) return null;
+      const temps = product.options.temperature;
+      return {
+        temperature: temps.includes("iced") ? "iced" : temps[0],
+        size: this.drinkOptions.size.choices[0].id,
+        sugar: this.drinkOptions.sugar.choices[0].id,
+      };
+    },
+    choice(group, id) {
+      return this.drinkOptions?.[group]?.choices.find((item) => item.id === id);
+    },
+    // true kalau pilihan dari keranjang lama masih ada di katalog.
+    validOptions(product, options) {
+      return Boolean(
+        options &&
+          product.options.temperature.includes(options.temperature) &&
+          this.choice("temperature", options.temperature) &&
+          this.choice("size", options.size) &&
+          this.choice("sugar", options.sugar),
+      );
+    },
+    // Harga satu gelas: harga dasar ditambah selisih ukuran.
+    unitPrice(product, options) {
+      return product.price + (options ? this.choice("size", options.size)?.price || 0 : 0);
+    },
+    // Contoh: "Es, Large, Kurang manis".
+    optionsLabel(options) {
+      if (!options) return "";
+      return ["temperature", "size", "sugar"]
+        .map((group) => this.choice(group, options[group])?.name)
+        .filter(Boolean)
+        .join(", ");
     },
     get beans() {
       return this.items.filter(
@@ -94,8 +132,16 @@ document.addEventListener("alpine:init", () => {
     savedCart = [];
   }
 
+  // Satu baris keranjang = satu menu dengan satu kombinasi pilihan. Minuman
+  // yang sama dengan suhu, ukuran, atau gula berbeda menjadi baris terpisah.
+  const lineKey = (id, options) =>
+    options ? `${id}-${options.temperature}-${options.size}-${options.sugar}` : String(id);
+
   Alpine.store("cart", {
-    items: Array.isArray(savedCart) ? savedCart : [],
+    // Keranjang lama belum punya key; syncWithCatalog melengkapi pilihannya.
+    items: (Array.isArray(savedCart) ? savedCart : [])
+      .filter((item) => item && typeof item === "object")
+      .map((item) => ({ ...item, key: item.key || lineKey(item.id, item.options) })),
     save() {
       try {
         localStorage.setItem(CART_KEY, JSON.stringify(this.items));
@@ -118,62 +164,96 @@ document.addEventListener("alpine:init", () => {
     },
     // Keranjang dari localStorage bisa berisi harga lama atau menu yang sudah
     // dihapus. Samakan dengan katalog server setiap kali katalog dimuat.
+    // Keranjang lama (sebelum ada pilihan minuman) mendapat pilihan bawaan.
     syncWithCatalog(products) {
+      const menu = Alpine.store("menu");
+      const max = Alpine.store("config").maxQuantityPerItem;
       const removed = [];
-      this.items = this.items.filter((cartItem) => {
+      const lines = [];
+      for (const cartItem of this.items) {
         const product = products.find((item) => item.id === cartItem.id);
         if (!product) {
           removed.push(cartItem.name);
-          return false;
+          continue;
         }
-        cartItem.name = product.name;
-        cartItem.price = product.price;
-        cartItem.img = product.img || "";
-        cartItem.quantity = Math.min(
-          cartItem.quantity,
-          Alpine.store("config").maxQuantityPerItem,
-        );
-        return true;
-      });
+        const options = product.options
+          ? menu.validOptions(product, cartItem.options)
+            ? { ...cartItem.options }
+            : menu.defaultOptions(product)
+          : null;
+        const key = lineKey(product.id, options);
+        const quantity = Number(cartItem.quantity) || 1;
+        const existing = lines.find((line) => line.key === key);
+        if (existing) {
+          existing.quantity = Math.min(existing.quantity + quantity, max);
+          continue;
+        }
+        lines.push({
+          key,
+          id: product.id,
+          name: product.name,
+          img: product.img || "",
+          options,
+          price: menu.unitPrice(product, options),
+          quantity: Math.min(quantity, max),
+        });
+      }
+      this.items = lines;
       this.save();
       if (removed.length) {
         window.dispatchEvent(new CustomEvent("cart:items-removed", { detail: removed }));
       }
     },
+    // Jumlah satu menu di semua barisnya (untuk lencana di kartu menu).
     quantityOf(id) {
-      return this.items.find((item) => item.id === id)?.quantity || 0;
+      return this.items
+        .filter((item) => item.id === id)
+        .reduce((sum, item) => sum + item.quantity, 0);
     },
-    // Tambahkan menu baru atau tambah quantity jika sudah ada. Batasnya dari
-    // server (MAX_QUANTITY_PER_ITEM di lib/catalog.js).
-    add(newItem) {
-      const cartItem = this.items.find((item) => item.id === newItem.id);
+    // Tambah satu: dari baris keranjang (punya key) atau dari menu katalog
+    // dengan pilihan tertentu. Minuman tanpa pilihan memakai pilihan bawaan.
+    // Batasnya dari server (MAX_QUANTITY_PER_ITEM di lib/catalog.js).
+    add(newItem, options) {
       const max = Alpine.store("config").maxQuantityPerItem;
-      if (!cartItem) {
+      if (newItem.key) {
+        const line = this.items.find((item) => item.key === newItem.key);
+        if (line && line.quantity < max) line.quantity++;
+        this.save();
+        return;
+      }
+
+      const menu = Alpine.store("menu");
+      const chosen = newItem.options ? options || menu.defaultOptions(newItem) : null;
+      const key = lineKey(newItem.id, chosen);
+      const line = this.items.find((item) => item.key === key);
+      if (!line) {
         this.items.push({
+          key,
           id: newItem.id,
           name: newItem.name,
           img: newItem.img || "",
-          price: newItem.price,
+          options: chosen,
+          price: menu.unitPrice(newItem, chosen),
           quantity: 1,
         });
-      } else if (cartItem.quantity < max) {
-        cartItem.quantity++;
+      } else if (line.quantity < max) {
+        line.quantity++;
       }
       this.save();
     },
     // Kurangi satu quantity. Jika tinggal satu, hapus dari keranjang.
-    remove(id) {
-      const cartItem = this.items.find((item) => item.id === id);
+    remove(key) {
+      const cartItem = this.items.find((item) => item.key === key);
       if (!cartItem) return;
       if (cartItem.quantity > 1) {
         cartItem.quantity--;
         this.save();
       } else {
-        this.removeAll(id);
+        this.removeAll(key);
       }
     },
-    removeAll(id) {
-      this.items = this.items.filter((item) => item.id !== id);
+    removeAll(key) {
+      this.items = this.items.filter((item) => item.key !== key);
       this.save();
     },
     clear() {

@@ -39,11 +39,13 @@ Menu ada di `lib/catalog.js`. Setiap menu dan biji kopi memakai foto JPG 800×60
 
 Untuk mengganti foto, simpan file baru sebagai `public/img/menu/<slug>.jpg`, isi kreditnya di `tools/photo_credits.json`, lalu jalankan `python tools/build_menu.py`. Menu baru yang belum punya foto otomatis mendapat ilustrasi SVG.
 
+Menu minuman (Signature, Kopi Susu, Kopi Hitam, Frappe, Non-kopi) punya pilihan suhu (panas atau es, sesuai menunya), ukuran (Regular atau Large +Rp5.000), dan tingkat gula. Daftar pilihannya ada di `drinkOptions` di `lib/catalog.js`. Menu yang sama dengan pilihan berbeda menjadi baris terpisah di keranjang.
+
 Navbar, keranjang, dan form checkout ditulis dua kali, di `index.html` dan `menu.html`. Kalau mengubah salah satunya, ubah juga yang lain. Isi keranjang disimpan di localStorage supaya tidak hilang saat pindah halaman.
 
 ## Cara kerja pembayaran
 
-1. Browser mengirim id menu, jumlah, data pemesan, dan metode pembayaran ke `POST /api/payment`. Harga tidak dikirim dari browser; server menghitungnya dari `lib/catalog.js`.
+1. Browser mengirim id menu, jumlah, pilihan minuman, data pemesan, dan metode pembayaran ke `POST /api/payment`. Harga tidak dikirim dari browser; server memeriksa pilihannya lalu menghitung harga dari `lib/catalog.js`, termasuk tambahan ukuran Large.
 2. Server membuat nomor order, menagih lewat Midtrans, lalu mengembalikan instruksi bayar dan sebuah token.
 3. Browser mengecek status tiap 5 detik lewat `GET /api/payment/:orderId/status` dengan token itu. Tanpa token, status dan pembatalan order ditolak.
 4. Midtrans juga mengirim notifikasi ke `POST /api/midtrans/notification`, yang diverifikasi dengan signature key.

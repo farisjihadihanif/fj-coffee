@@ -60,9 +60,11 @@ const post = (url, body, headers = {}) =>
     body: JSON.stringify(body),
   });
 
+const regular = { temperature: "hot", size: "regular", sugar: "normal" };
+
 test("total dihitung dari katalog server, termasuk pajak resto", () => {
   const order = buildOrder([
-    { id: 101, quantity: 2 },
+    { id: 101, quantity: 2, options: regular },
     { id: 301, quantity: 1 },
   ]);
   assert.equal(order.subtotal, 60000);
@@ -79,6 +81,59 @@ test("keranjang yang tidak valid ditolak", () => {
   assert.throws(() => buildOrder([{ id: 1, quantity: 1.5 }]));
   assert.throws(() => buildOrder([{ id: 1, quantity: 21 }]));
   assert.throws(() => buildOrder([{ id: 1, quantity: 1 }, { id: 1, quantity: 1 }]));
+});
+
+test("harga minuman dihitung dari pilihan ukuran", () => {
+  const order = buildOrder([
+    { id: 105, quantity: 1, options: { temperature: "iced", size: "large", sugar: "less" } },
+    { id: 105, quantity: 2, options: { temperature: "iced", size: "regular", sugar: "less" } },
+  ]);
+  // Gula aren Rp25.000; Large menambah Rp5.000.
+  assert.equal(order.itemDetails[0].price, 30000);
+  assert.equal(order.itemDetails[1].price, 25000);
+  assert.equal(order.subtotal, 80000);
+  assert.equal(order.itemDetails[0].name, "Kopi Susu Gula Aren (Es, Large, Kurang manis)");
+  assert.equal(order.itemDetails[0].id, "MENU-105-ICED-LARGE-LESS");
+  for (const item of order.itemDetails) {
+    assert.ok(item.id.length <= 50 && item.name.length <= 50);
+  }
+});
+
+test("pilihan minuman divalidasi di server", () => {
+  const iced = { temperature: "iced", size: "regular", sugar: "normal" };
+  // Minuman wajib membawa pilihan lengkap dan dikenal.
+  assert.throws(() => buildOrder([{ id: 105, quantity: 1 }]));
+  assert.throws(() => buildOrder([{ id: 105, quantity: 1, options: { ...iced, size: "jumbo" } }]));
+  assert.throws(() => buildOrder([{ id: 105, quantity: 1, options: { ...iced, sugar: undefined } }]));
+  assert.throws(() => buildOrder([{ id: 105, quantity: 1, options: { ...iced, price: 0 } }]));
+  assert.throws(() => buildOrder([{ id: 105, quantity: 1, options: [] }]));
+  // Suhu harus tersedia untuk menu itu: frappe selalu es, espresso selalu panas.
+  assert.throws(() => buildOrder([{ id: 151, quantity: 1, options: { ...iced, temperature: "hot" } }]));
+  assert.throws(() => buildOrder([{ id: 101, quantity: 1, options: iced }]));
+  // Makanan dan biji kopi tidak punya pilihan.
+  assert.throws(() => buildOrder([{ id: 301, quantity: 1, options: iced }]));
+  // Baris yang sama persis dua kali ditolak, pilihan berbeda boleh.
+  assert.throws(() =>
+    buildOrder([
+      { id: 105, quantity: 1, options: iced },
+      { id: 105, quantity: 1, options: { ...iced } },
+    ]),
+  );
+  assert.equal(
+    buildOrder([
+      { id: 105, quantity: 1, options: iced },
+      { id: 105, quantity: 1, options: { ...iced, temperature: "hot" } },
+    ]).itemDetails.length,
+    3,
+  );
+});
+
+test("setiap kategori punya 6 sampai 10 menu", async () => {
+  const { categories, products } = require("../lib/catalog");
+  for (const category of categories) {
+    const count = products.filter((item) => item.category === category.id).length;
+    assert.ok(count >= 6 && count <= 10, `${category.name}: ${count} menu`);
+  }
 });
 
 test("data pelanggan divalidasi", () => {
@@ -297,8 +352,10 @@ test("tanpa key Midtrans, situs tetap jalan dan checkout menjawab 503", async ()
     assert.equal(config.paymentReady, false);
     assert.equal(config.maxQuantityPerItem, require("../lib/catalog").MAX_QUANTITY_PER_ITEM);
     const products = await (await fetch(`${base}/api/products`)).json();
-    assert.equal(products.products.length, 62);
-    assert.equal(products.categories.length, 7);
+    const catalog = require("../lib/catalog");
+    assert.equal(products.products.length, catalog.products.length);
+    assert.equal(products.categories.length, catalog.categories.length);
+    assert.deepEqual(products.drinkOptions, catalog.drinkOptions);
     const res = await post(`${base}/api/payment`, {
       items: [{ id: 1, quantity: 1 }],
       customer,
