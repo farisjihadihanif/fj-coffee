@@ -2798,48 +2798,106 @@ body:has(.demo-notice[style*="display: none"]) footer {
   }
 }
 
-/* ===== Kredit foto (menu.html) ===== */
-.photo-credits {
-  max-width: 72rem;
+/* Tautan kecil ke halaman kredit foto di footer. */
+footer .credit a.credits-link {
+  color: #fff;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+footer .credit a.credits-link:hover {
+  color: var(--bg);
+}
+
+/* ===== Halaman kredit foto (credits.html) ===== */
+.credits-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px max(16px, 7%);
+  border-bottom: 1px solid #3a2a1c;
+}
+
+.credits-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.credits-logo span {
+  color: var(--primary);
+}
+
+.credits-back {
+  white-space: nowrap;
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.credits {
+  width: min(100% - 32px, 46rem);
   margin: 0 auto;
-  padding: 2rem 7% 1rem;
-  font-size: 0.9rem;
+  padding: 40px 0 64px;
+  font-size: 15px;
   line-height: 1.6;
 }
 
-.photo-credits h2 {
+.credits h1 {
+  margin-bottom: 12px;
   color: var(--primary);
-  font-size: 1.4rem;
-  padding-bottom: 0.6rem;
-  margin-bottom: 0.8rem;
-  border-bottom: 1px solid var(--primary);
+  font-size: 30px;
+  line-height: 1.2;
 }
 
-.photo-credits a {
+.credits > p {
+  color: #ddd;
+}
+
+.credits a {
   color: var(--primary);
   text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
-.photo-credits summary {
-  margin-top: 0.8rem;
-  cursor: pointer;
-  color: var(--primary);
-  font-weight: 600;
+.credits section {
+  margin-top: 32px;
 }
 
-.photo-credits ul {
+.credits h2 {
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(182, 137, 91, 0.4);
+  color: #fff;
+  font-size: 18px;
+}
+
+.credits ul {
   list-style: none;
-  margin-top: 0.8rem;
-  columns: 2 22rem;
-  column-gap: 2rem;
 }
 
-.photo-credits li {
-  break-inside: avoid;
-  padding: 0.2rem 0;
+.credits li {
+  padding: 10px 0;
+  border-bottom: 1px solid #1f1810;
   overflow-wrap: anywhere;
 }
 
-.photo-credit-license {
-  color: #bbb;
+.credit-item {
+  display: block;
+  color: #fff;
+  font-weight: 500;
+}
+
+.credit-by {
+  display: block;
+  color: #aaa;
+  font-size: 13px;
 }

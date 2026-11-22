@@ -334,10 +334,10 @@ test("header keamanan dikirim, HSTS hanya lewat HTTPS", async () => {
 test("halaman tidak punya inline script dan CDN dikunci dengan SRI", () => {
   const fs = require("node:fs");
   const path = require("node:path");
-  for (const page of ["index.html", "menu.html"]) {
+  for (const page of ["index.html", "menu.html", "credits.html"]) {
     const html = fs.readFileSync(path.join(__dirname, "..", "public", page), "utf8");
     assert.doesNotMatch(html, /<script>/, page);
-    for (const tag of html.match(/<script[^>]*src="https:[^>]*>/g)) {
+    for (const tag of html.match(/<script[^>]*src="https:[^>]*>/g) || []) {
       assert.match(tag, /integrity="sha384-/, `${page}: ${tag}`);
       assert.doesNotMatch(tag, /@\d+\.x|unpkg\.com\/feather-icons"/, `${page}: ${tag}`);
     }
@@ -347,7 +347,7 @@ test("halaman tidak punya inline script dan CDN dikunci dengan SRI", () => {
 test("tag penutup di halaman tidak terpotong", () => {
   const fs = require("node:fs");
   const path = require("node:path");
-  for (const page of ["index.html", "menu.html"]) {
+  for (const page of ["index.html", "menu.html", "credits.html"]) {
     const html = fs.readFileSync(path.join(__dirname, "..", "public", page), "utf8");
     // "</svg" tanpa ">" membuat browser menelan tag berikutnya dan
     // menyusun ulang DOM, misalnya link bersarang di kartu produk.
@@ -397,6 +397,25 @@ test("setiap foto menu punya kredit pemilik dan sumbernya", () => {
     assert.ok(credit.author && credit.license, product.name);
     assert.ok(["Pixabay", "Openverse"].includes(credit.source), product.name);
     assert.match(credit.url, /^https:\/\//, product.name);
+  }
+});
+
+test("halaman kredit foto memuat setiap foto beserta lisensinya", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const { products } = require("../lib/catalog");
+  const page = fs.readFileSync(path.join(__dirname, "..", "public", "credits.html"), "utf8");
+  const escape = (text) => text.replace(/&/g, "&amp;");
+  const withCredit = products.filter((item) => item.credit);
+  assert.equal((page.match(/<li>/g) || []).length, withCredit.length, "jalankan ulang tools/build_menu.py");
+  for (const { name, credit } of withCredit) {
+    assert.ok(page.includes(`href="${escape(credit.url)}"`), `${name}: sumber foto`);
+    assert.ok(page.includes(escape(credit.author)), `${name}: fotografer`);
+  }
+  assert.match(page, /creativecommons\.org\/licenses\/by\/2\.0\//);
+  for (const file of ["index.html", "menu.html"]) {
+    const html = fs.readFileSync(path.join(__dirname, "..", "public", file), "utf8");
+    assert.match(html, /href="credits\.html"/, `${file}: tautan kredit foto`);
   }
 });
 

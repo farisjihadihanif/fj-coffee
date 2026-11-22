@@ -1,4 +1,4 @@
-"""Membuat lib/catalog.js dari satu daftar menu.
+"""Membuat lib/catalog.js dan public/credits.html dari satu daftar menu.
 Jalankan: python tools/build_menu.py
 
 Kalau public/img/menu/<slug>.jpg ada, menu itu memakai foto tersebut dan
@@ -354,11 +354,80 @@ def credit_js(credit):
     fields = ", ".join(f"{k}: {json.dumps(credit[k], ensure_ascii=False)}" for k in ("author", "source", "url", "license"))
     return f", credit: {{ {fields} }}"
 
+LICENSE_URLS = {
+    "Pixabay Content License": "https://pixabay.com/service/license-summary/",
+    "CC BY 2.0": "https://creativecommons.org/licenses/by/2.0/",
+}
+
+def credits_page(entries):
+    """Halaman public/credits.html: sumber setiap foto, per kategori.
+
+    entries: daftar (kategori, nama menu, kredit). Lima foto memakai CC BY 2.0,
+    yang mewajibkan nama fotografer, sumber, lisensi, dan keterangan perubahan.
+    """
+    e = html.escape
+    groups = []
+    for cat, cat_name in CATEGORIES:
+        items = [(name, c) for c_id, name, c in entries if c_id == cat]
+        if not items:
+            continue
+        lis = "\n".join(
+            f'          <li><span class="credit-item">{e(name)}</span> '
+            f'<span class="credit-by">foto oleh <a href="{e(c["url"])}" target="_blank" rel="noopener">{e(c["author"])}</a>, '
+            f'{e(c["source"])}, <a href="{e(LICENSE_URLS[c["license"]])}" target="_blank" rel="noopener">{e(c["license"])}</a></span></li>'
+            for name, c in items)
+        groups.append(f'      <section>\n        <h2>{e(cat_name)}</h2>\n        <ul>\n{lis}\n        </ul>\n      </section>')
+    cc = sum(1 for _, _, c in entries if c["license"].startswith("CC "))
+    return f"""<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kredit Foto | FJ Coffee</title>
+    <meta name="description" content="Sumber dan lisensi foto menu dan biji kopi FJ Coffee." />
+    <!-- Halaman ini dibuat oleh tools/build_menu.py. Jangan disunting langsung. -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png" />
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="credits-page">
+    <header class="credits-header">
+      <a href="index.html" class="credits-logo"><img src="img/logo.png" alt="" width="32" height="32" />FJ<span>coffee</span>.</a>
+      <a href="menu.html" class="credits-back">Kembali ke menu</a>
+    </header>
+
+    <main class="credits">
+      <h1>Kredit foto</h1>
+      <p>
+        Foto menu dan biji kopi diambil dari <a href="https://pixabay.com/" target="_blank" rel="noopener">Pixabay</a> dan
+        <a href="https://openverse.org/" target="_blank" rel="noopener">Openverse</a>. Terima kasih kepada para fotografernya.
+        Semua foto dipotong ke rasio 4:3 dan diperkecil. {cc} foto dari Openverse memakai lisensi
+        <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY 2.0</a>; foto lainnya memakai
+        <a href="https://pixabay.com/service/license-summary/" target="_blank" rel="noopener">Pixabay Content License</a>.
+      </p>
+
+{chr(10).join(groups)}
+    </main>
+  </body>
+</html>
+"""
+
 def main():
     lines = []
+    credit_entries = []
     for pid, cat, name, price, desc, kind, args in M:
         slug = slugify(name)
         img, credit = image_for(slug, name, lambda: art(kind, **args))
+        if credit:
+            credit_entries.append((cat, name, credit))
         temps = temperatures_for(pid, cat)
         opts = f", options: {{ temperature: {json.dumps(temps)} }}" if temps else ""
         if pid not in RATINGS:
@@ -366,6 +435,7 @@ def main():
         lines.append(f'  {{ id: {pid}, category: "{cat}", name: {json.dumps(name)}, img: "{img}", price: {price}, rating: {RATINGS[pid]}, description: {json.dumps(desc, ensure_ascii=False)}{opts}{credit_js(credit)} }},')
     for pid, name, price, rating in BEANS:
         img, credit = image_for("beans-" + slugify(name), name)
+        credit_entries.append(("beans", name, credit))
         lines.append(f'  {{ id: {pid}, category: "beans", name: "{name}", img: "{img}", price: {price}, rating: {rating}, description: "Biji kopi 200 g."{credit_js(credit)} }},')
     cats = "\n".join(f'  {{ id: "{c}", name: "{n}" }},' for c, n in CATEGORIES)
     js = f"""// Katalog menu FJ Coffee. Ini satu-satunya sumber harga: browser hanya
@@ -375,7 +445,7 @@ def main():
 // File ini dibuat oleh tools/build_menu.py. Untuk mengubah menu, ubah daftar
 // di skrip itu lalu jalankan ulang, atau sunting langsung di sini kalau hanya
 // mengganti harga. img adalah path di dalam public/img/; credit berisi
-// pemilik foto dan sumbernya (ditampilkan di bagian Kredit Foto); rating
+// pemilik foto dan sumbernya (ditampilkan di public/credits.html); rating
 // adalah nilai bintang 1-5 yang tampil di kartu menu. Menu minuman punya
 // options.temperature: suhu yang bisa dipilih.
 const categories = [
@@ -433,7 +503,9 @@ module.exports = {{
 """
     with open(os.path.join(ROOT, "lib", "catalog.js"), "w", encoding="utf-8", newline="\n") as f:
         f.write(js)
-    print(len(M), "menu,", len(BEANS), "biji kopi")
+    with open(os.path.join(ROOT, "public", "credits.html"), "w", encoding="utf-8", newline="\n") as f:
+        f.write(credits_page(credit_entries))
+    print(len(M), "menu,", len(BEANS), "biji kopi,", len(credit_entries), "kredit foto")
 
 if __name__ == "__main__":
     main()

@@ -35,7 +35,7 @@ npm run lint   # memeriksa kode dengan ESLint
 
 ## Menu dan gambar
 
-Menu ada di `lib/catalog.js`. Setiap menu dan biji kopi memakai foto JPG 800×600 (4:3) di `public/img/menu/`, diambil dari [Pixabay](https://pixabay.com/) (Pixabay Content License) atau [Openverse](https://openverse.org/) (CC0 atau CC BY). Nama fotografer dan halaman sumber tiap foto ada di `tools/photo_credits.json` dan tampil di bagian Kredit Foto di `menu.html`.
+Menu ada di `lib/catalog.js`. Setiap menu dan biji kopi memakai foto JPG 800×600 (4:3) di `public/img/menu/`, diambil dari [Pixabay](https://pixabay.com/) (Pixabay Content License) atau [Openverse](https://openverse.org/) (CC0 atau CC BY). Nama fotografer dan halaman sumber tiap foto ada di `tools/photo_credits.json` dan tampil di halaman `credits.html` (dibuat ulang oleh `tools/build_menu.py`, ditautkan dari footer).
 
 Untuk mengganti foto, simpan file baru sebagai `public/img/menu/<slug>.jpg`, isi kreditnya di `tools/photo_credits.json`, lalu jalankan `python tools/build_menu.py`. Menu baru yang belum punya foto otomatis mendapat ilustrasi SVG.
 

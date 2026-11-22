@@ -375,30 +375,6 @@
     </section>
     <!-- Menu Page End -->
 
-    <!-- Photo Credits Start -->
-    <section id="kredit-foto" class="photo-credits" x-data x-show="$store.menu.status === 'ready'">
-      <h2>Kredit Foto</h2>
-      <p>
-        Foto menu diambil dari <a href="https://pixabay.com/" target="_blank" rel="noopener">Pixabay</a> dan
-        <a href="https://openverse.org/" target="_blank" rel="noopener">Openverse</a>. Terima kasih kepada para fotografernya.
-        Semua foto dipotong ke rasio 4:3 dan diperkecil. Foto dari Openverse memakai lisensi
-        <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY 2.0</a>.
-      </p>
-      <details>
-        <summary>Lihat sumber setiap foto (<span x-text="$store.menu.items.filter((item) => item.credit).length"></span>)</summary>
-        <ul>
-          <template x-for="item in $store.menu.items.filter((item) => item.credit)" :key="item.id">
-            <li>
-              <span x-text="item.name"></span>: foto oleh
-              <a :href="item.credit.url" target="_blank" rel="noopener" x-text="item.credit.author"></a>
-              <span class="photo-credit-license" x-text="`(${item.credit.source}, ${item.credit.license})`"></span>
-            </li>
-          </template>
-        </ul>
-      </details>
-    </section>
-    <!-- Photo Credits End -->
-
     <!-- Modal Box Item Detail Start -->
     <dialog class="modal" id="item-detail-modal" aria-labelledby="item-detail-title">
       <div class="modal-container">
@@ -441,7 +417,6 @@
         <a href="index.html#about">Tentang Kami</a>
         <a href="menu.html">Menu</a>
         <a href="index.html#contact">Kontak</a>
-        <a href="#kredit-foto">Kredit Foto</a>
       </div>
       <!-- Credit -->
       <div class="credit">
@@ -450,6 +425,9 @@
         </p>
         <p>
           Tampilan dasar dari tutorial <a href="https://github.com/sandhikagalih/kedai-kopi-kenangan-senja">Sandhika Galih</a>.
+        </p>
+        <p>
+          <a href="credits.html" class="credits-link">Kredit foto</a>
         </p>
       </div>
     </footer>
