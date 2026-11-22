@@ -1281,7 +1281,7 @@ input:focus-visible {
   flex-direction: column;
   gap: 0.2rem;
   max-width: min(26rem, calc(100vw - 7.5rem));
-  padding: 0.7rem 1rem;
+  padding: 0.7rem 3.2rem 0.7rem 1rem;
   border: 1px solid var(--primary);
   border-radius: 0.8rem;
   background: #1b140e;
@@ -1307,6 +1307,78 @@ input:focus-visible {
   color: var(--primary);
 }
 
+.demo-badge-close {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  display: grid;
+  place-items: center;
+  width: max(2.8rem, 32px);
+  height: max(2.8rem, 32px);
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #f3e6d0;
+  cursor: pointer;
+}
+
+.demo-badge-close:hover {
+  background: rgba(243, 230, 208, 0.12);
+  color: var(--primary);
+}
+
+.demo-badge-close svg {
+  width: 1.6rem;
+  height: 1.6rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Setelah pop-up ditutup, hanya chip kecil ini yang tersisa. */
+.demo-chip {
+  position: fixed;
+  left: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 9000;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: max(3.2rem, 32px);
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--primary);
+  border-radius: 999px;
+  background: #1b140e;
+  color: #f3e6d0;
+  font: inherit;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 0.3rem 0.8rem rgba(0, 0, 0, 0.45);
+}
+
+.demo-chip:hover {
+  color: var(--primary);
+}
+
+.demo-chip svg {
+  width: 1.4rem;
+  height: 1.4rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.demo-badge-close:focus-visible,
+.demo-chip:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 .demo-payment-note {
   margin: 0 0 1rem;
   padding: 0.8rem 1rem;
@@ -1328,6 +1400,11 @@ input:focus-visible {
     left: 0.75rem;
     bottom: 1rem;
     font-size: 1.15rem;
+  }
+
+  .demo-chip {
+    left: 0.75rem;
+    bottom: 1rem;
   }
 }
 
@@ -2361,7 +2438,7 @@ footer {
   padding-bottom: 13rem;
 }
 
-body:has(.demo-badge[style*="display: none"]) footer {
+body:has(.demo-notice[style*="display: none"]) footer {
   padding-bottom: 6rem;
 }
 

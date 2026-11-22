@@ -182,6 +182,31 @@ document.addEventListener("alpine:init", () => {
     },
   });
 
+  // Pop-up mode demo: tampil sekali saat halaman pertama dibuka. Setelah
+  // ditutup, hanya chip "Demo" yang tersisa sampai sesi browser berakhir.
+  const DEMO_CLOSED_KEY = "fj-coffee-demo-closed";
+  let demoClosed = false;
+  try {
+    demoClosed = sessionStorage.getItem(DEMO_CLOSED_KEY) === "1";
+  } catch (error) {
+    // sessionStorage diblokir: anggap pop-up belum pernah ditutup.
+  }
+
+  Alpine.store("demoNotice", {
+    open: !demoClosed,
+    close() {
+      this.open = false;
+      try {
+        sessionStorage.setItem(DEMO_CLOSED_KEY, "1");
+      } catch (error) {
+        // Tanpa sessionStorage, pop-up muncul lagi di halaman berikutnya.
+      }
+    },
+    show() {
+      this.open = true;
+    },
+  });
+
   Alpine.store("menu").load();
   Alpine.store("config").load();
 });

@@ -130,10 +130,27 @@
     <!-- Navbar End -->
 
     <!-- Penanda mode demo: hanya tampil saat Midtrans sandbox -->
-    <aside class="demo-badge" x-data x-show="!$store.config.isProduction" x-cloak>
-      <span><strong>Mode demo.</strong> Pembayaran sandbox, tanpa uang sungguhan.</span>
-      <a href="https://simulator.sandbox.midtrans.com/" target="_blank" rel="noopener">Buka simulator Midtrans</a>
-    </aside>
+    <div class="demo-notice" x-data x-show="!$store.config.isProduction" x-cloak>
+      <aside class="demo-badge" id="demo-badge" aria-label="Info mode demo" x-show="$store.demoNotice.open">
+        <button type="button" class="demo-badge-close" aria-label="Tutup info mode demo" @click="$store.demoNotice.close(); $nextTick(() => $refs.demoChip.focus())">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="img/feather-sprite.svg#x" /></svg>
+        </button>
+        <span><strong>Mode demo.</strong> Pembayaran sandbox, tanpa uang sungguhan.</span>
+        <a href="https://simulator.sandbox.midtrans.com/" target="_blank" rel="noopener">Buka simulator Midtrans</a>
+      </aside>
+      <button
+        type="button"
+        class="demo-chip"
+        x-ref="demoChip"
+        x-show="!$store.demoNotice.open"
+        aria-controls="demo-badge"
+        aria-label="Buka info mode demo"
+        @click="$store.demoNotice.show()"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use href="img/feather-sprite.svg#info" /></svg>
+        Demo
+      </button>
+    </div>
 
     <!-- Checkout Modal Start -->
     <div class="payment-notification" id="payment-notification" role="status" aria-live="polite"></div>
