@@ -446,3 +446,41 @@ test("file server tidak bisa diunduh lewat browser", async () => {
     assert.equal(home.status, 200);
   });
 });
+
+test("health check menjawab 200 tanpa cache", async () => {
+  await withServer({ coreApi: null }, async (base) => {
+    const res = await fetch(`${base}/healthz`);
+    assert.equal(res.status, 200);
+    assert.deepEqual(await res.json(), { status: "ok" });
+    assert.match(res.headers.get("cache-control"), /no-store/);
+  });
+});
+
+test("POST dari origin lain ditolak kalau origin produksi diisi", async () => {
+  const allowedOrigins = ["https://fj-coffee.onrender.com"];
+  await withServer({ coreApi: mockCoreApi(), allowedOrigins }, async (base) => {
+    const body = { items: [{ id: 101, quantity: 1, options: regular }], customer, paymentMethod: "bca" };
+    const foreign = await post(`${base}/api/payment`, body, { Origin: "https://evil.example" });
+    assert.equal(foreign.status, 403);
+    const cancel = await post(`${base}/api/payment/FJC-ABC-12345678/cancel`, {}, { Origin: "https://evil.example" });
+    assert.equal(cancel.status, 403);
+
+    const own = await post(`${base}/api/payment`, body, { Origin: "https://fj-coffee.onrender.com" });
+    assert.equal(own.status, 200);
+    // Tanpa header Origin (mis. curl atau server lain) tetap diproses.
+    const noOrigin = await post(`${base}/api/payment`, body);
+    assert.equal(noOrigin.status, 200);
+  });
+});
+
+test("webhook Midtrans tidak dicek origin-nya", async () => {
+  await withServer({ coreApi: mockCoreApi(), allowedOrigins: ["https://fj-coffee.onrender.com"] }, async (base) => {
+    const payload = { order_id: "FJC-ABC-12345678", status_code: "200", gross_amount: "35200.00", transaction_status: "settlement" };
+    const signature_key = crypto
+      .createHash("sha512")
+      .update(`${payload.order_id}${payload.status_code}${payload.gross_amount}${SERVER_KEY}`)
+      .digest("hex");
+    const res = await post(`${base}/api/midtrans/notification`, { ...payload, signature_key }, { Origin: "https://api.midtrans.com" });
+    assert.equal(res.status, 200);
+  });
+});

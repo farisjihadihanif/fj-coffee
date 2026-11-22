@@ -24,6 +24,26 @@ function readTrustProxy(value) {
 }
 const trustProxy = readTrustProxy(process.env.TRUST_PROXY);
 
+// Alamat publik situs, mis. https://fj-coffee.onrender.com. Boleh lebih dari
+// satu, dipisah koma (mis. domain sendiri). Di Render, RENDER_EXTERNAL_URL
+// diisi otomatis dan ikut dipakai. Kosong di komputer sendiri.
+function readOrigins(...values) {
+  const origins = [];
+  for (const value of values.join(",").split(",")) {
+    const text = value.trim();
+    if (!text) continue;
+    try {
+      const { origin, protocol } = new URL(text);
+      if (protocol !== "https:" && protocol !== "http:") throw new Error();
+      if (!origins.includes(origin)) origins.push(origin);
+    } catch {
+      console.warn(`PUBLIC_URL "${text}" bukan URL yang valid, contoh: https://fj-coffee.onrender.com. Diabaikan.`);
+    }
+  }
+  return origins;
+}
+const allowedOrigins = readOrigins(process.env.PUBLIC_URL || "", process.env.RENDER_EXTERNAL_URL || "");
+
 let coreApi = null;
 if (serverKey && clientKey) {
   coreApi = new midtransClient.CoreApi({ isProduction, serverKey, clientKey });
@@ -40,12 +60,12 @@ if (coreApi && isProduction === serverKey.startsWith("SB-")) {
   );
 }
 
-const app = createApp({ coreApi, serverKey, isProduction, trustProxy });
+const app = createApp({ coreApi, serverKey, isProduction, trustProxy, allowedOrigins });
 
 app.listen(port, () => {
-  console.log(
-    `FJ Coffee jalan di http://localhost:${port} (Midtrans ${
-      isProduction ? "PRODUCTION" : "sandbox"
-    })`,
-  );
+  const address = allowedOrigins[0] || `http://localhost:${port}`;
+  console.log(`FJ Coffee jalan di ${address} (Midtrans ${isProduction ? "PRODUCTION" : "sandbox"})`);
+  if (allowedOrigins.length) {
+    console.log(`Notification URL Midtrans: ${allowedOrigins[0]}/api/midtrans/notification`);
+  }
 });
