@@ -1391,15 +1391,65 @@ input:focus-visible {
   outline-offset: 2px;
 }
 
-/* Keterangan mode sandbox */
-.sandbox-notice {
-  margin: 0 7%;
-  padding: 0.8rem 1.2rem;
-  border: 1px dashed var(--primary);
-  border-radius: 0.6rem;
-  text-align: center;
-  font-size: 0.95rem;
+/* Penanda mode demo (Midtrans sandbox). Pasangan tombol keranjang di kanan
+   bawah, jadi letaknya di kiri bawah dan tidak menggeser tata letak. */
+.demo-badge {
+  position: fixed;
+  left: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  max-width: min(26rem, calc(100vw - 7.5rem));
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--primary);
+  border-radius: 0.8rem;
+  background: #1b140e;
+  color: #f3e6d0;
+  font-size: 1rem;
+  line-height: 1.45;
+  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.45);
+}
+
+.demo-badge strong {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.demo-badge a {
+  color: #fff;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.demo-badge a:hover {
+  color: var(--primary);
+}
+
+.demo-payment-note {
+  margin: 0 0 1rem;
+  padding: 0.8rem 1rem;
+  border-left: 3px solid var(--primary);
+  background: #f6eee3;
+  color: #3a2313;
+  font-size: 1.1rem;
   line-height: 1.5;
+}
+
+.demo-payment-note a {
+  color: #7a5229;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+@media (max-width: 450px) {
+  .demo-badge {
+    left: 0.75rem;
+    bottom: 1rem;
+    font-size: 1.15rem;
+  }
 }
 
 /* Filter kategori */

@@ -143,6 +143,12 @@
     </nav>
     <!-- Navbar End -->
 
+    <!-- Penanda mode demo: hanya tampil saat Midtrans sandbox -->
+    <aside class="demo-badge" x-data x-show="!$store.config.isProduction" x-cloak>
+      <span><strong>Mode demo.</strong> Pembayaran sandbox, tanpa uang sungguhan.</span>
+      <a href="https://simulator.sandbox.midtrans.com/" target="_blank" rel="noopener">Buka simulator Midtrans</a>
+    </aside>
+
     <!-- Checkout Modal Start -->
     <div class="payment-notification" id="payment-notification" role="status" aria-live="polite"></div>
     <div class="checkout-modal" id="checkout-modal" aria-hidden="true">
@@ -192,6 +198,12 @@
           </form>
           <section class="payment-method-panel" id="payment-method-panel" hidden>
             <h5>Pilih Metode Pembayaran</h5>
+            <p class="demo-payment-note" x-show="!$store.config.isProduction">
+              Ini pembayaran sandbox. Setelah memilih metode, salin nomor VA atau
+              URL gambar QRIS ke
+              <a href="https://simulator.sandbox.midtrans.com/" target="_blank" rel="noopener">simulator Midtrans</a>
+              untuk menyelesaikan pembayaran.
+            </p>
             <p class="payment-order-label">Total: <strong id="payment-total"></strong></p>
             <p class="payment-order-label" id="payment-order-label" hidden>Order: <strong id="payment-order-id"></strong></p>
             <div class="payment-method-list" id="payment-method-list">
