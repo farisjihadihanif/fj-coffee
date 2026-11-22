@@ -136,6 +136,15 @@ test("setiap kategori punya 6 sampai 10 menu", async () => {
   }
 });
 
+test("setiap menu dan biji kopi punya rating 1 sampai 5", () => {
+  const { products } = require("../lib/catalog");
+  for (const product of products) {
+    assert.equal(typeof product.rating, "number", `${product.name} belum punya rating`);
+    assert.ok(product.rating >= 1 && product.rating <= 5, `${product.name}: rating ${product.rating}`);
+    assert.equal(Math.round(product.rating * 10), product.rating * 10, `${product.name}: satu desimal`);
+  }
+});
+
 test("data pelanggan divalidasi", () => {
   assert.equal(validateOrderDetails(customer).tableNumber, 7);
   assert.equal(validateOrderDetails({ ...customer, email: "" }).email, "");

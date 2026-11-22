@@ -1094,6 +1094,83 @@ dialog.modal::backdrop {
   fill: var(--primary);
 }
 
+.products .product-stars,
+.modal .product-stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.products .product-stars {
+  justify-content: center;
+}
+
+.products .product-stars .star,
+.modal .product-stars .modal-star {
+  display: block;
+}
+
+.modal .product-stars .modal-star > svg {
+  display: block;
+}
+
+.product-rating-value,
+.modal-rating-value {
+  margin-left: 6px;
+  color: #d9bf9f;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 600;
+}
+
+/* Rating kecil di kartu menu: bentuk bintang sama dengan kartu biji kopi. */
+.menu-rating {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  margin-top: 4px;
+}
+
+.menu-rating .rating-star {
+  position: relative;
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+
+.menu-rating .rating-star svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+  max-width: none;
+  stroke: var(--primary);
+  stroke-width: 2;
+}
+
+.menu-rating .rating-star-outline {
+  fill: none;
+}
+
+.menu-rating .rating-star-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 14px;
+  overflow: hidden;
+}
+
+.menu-rating .rating-star-fill svg {
+  fill: var(--primary);
+}
+
+.menu-rating-value {
+  margin-left: 5px;
+  color: #d9bf9f;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
 .products .product-price {
   font-size: 1.3rem;
   font-weight: bold;

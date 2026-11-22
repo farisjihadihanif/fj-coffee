@@ -150,17 +150,19 @@ if (itemDetailModal) {
     updateModalPrice();
 
     // Bintang hanya untuk menu yang punya rating.
-    modalStars.hidden = !modalProduct.rating;
-    modalStars.innerHTML = modalProduct.rating
+    const rating = Number(modalProduct.rating) || 0;
+    modalStars.hidden = !rating;
+    modalStars.setAttribute("aria-label", rating ? `Rating ${window.ratingText(rating)} dari 5` : "");
+    modalStars.innerHTML = rating
       ? Array.from({ length: 5 }, (_, index) => {
-          const fill = Math.max(0, Math.min(1, modalProduct.rating - index));
+          const fill = window.starFill(rating, index + 1);
           return `<span class="modal-star" aria-hidden="true">
             <svg viewBox="0 0 24 24" class="modal-star-outline"><use href="img/feather-sprite.svg#star" /></svg>
             <span class="modal-star-fill" style="width: ${fill * 100}%">
               <svg viewBox="0 0 24 24"><use href="img/feather-sprite.svg#star" /></svg>
             </span>
           </span>`;
-        }).join("")
+        }).join("") + `<span class="modal-rating-value" aria-hidden="true">${window.ratingText(rating)}</span>`
       : "";
 
     itemDetailModal.showModal();

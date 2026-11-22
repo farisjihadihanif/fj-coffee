@@ -347,6 +347,17 @@
                 </button>
                 <div class="menu-tile-body">
                   <h3><button type="button" class="menu-tile-name" :data-detail-id="item.id" x-text="item.name"></button></h3>
+                  <div class="menu-rating" x-show="item.rating" role="img" :aria-label="`Rating ${ratingText(item.rating)} dari 5`">
+                    <template x-for="star in 5" :key="star">
+                      <span class="rating-star" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" class="rating-star-outline"><use href="img/feather-sprite.svg#star" /></svg>
+                        <span class="rating-star-fill" :style="{ width: `${starFill(item.rating, star) * 100}%` }">
+                          <svg viewBox="0 0 24 24"><use href="img/feather-sprite.svg#star" /></svg>
+                        </span>
+                      </span>
+                    </template>
+                    <span class="menu-rating-value" x-text="ratingText(item.rating)" aria-hidden="true"></span>
+                  </div>
                   <p x-text="item.description"></p>
                   <div class="menu-tile-foot">
                     <span class="menu-item-price" x-text="rupiah(item.price)"></span>
@@ -396,7 +407,7 @@
           <img alt="" width="600" height="450" />
           <div class="product-content">
             <h3 id="item-detail-title"></h3>
-            <div class="product-stars"></div>
+            <div class="product-stars" role="img"></div>
             <p></p>
             <div class="drink-options" hidden></div>
             <div class="product-price"></div>

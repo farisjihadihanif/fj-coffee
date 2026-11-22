@@ -291,6 +291,17 @@ M = [
  (355, "snack", "Tahu Goreng", 20000, "Tahu goreng renyah dengan sambal kecap.", "raw", dict(svg=RAW["fries"])),
 ]
 
+# Rating bintang (skala 5) setiap menu, per id. Biji kopi memakai rating di BEANS.
+RATINGS = {
+    105: 4.7, 501: 4.7, 502: 4.6, 503: 4.8, 504: 4.2, 505: 4.3, 101: 4.7, 102: 4.3, 103: 4.7, 104: 4.8,
+    107: 4.2, 108: 4.7, 109: 4.5, 110: 4.2, 111: 4.3, 112: 4.6, 106: 4.6, 113: 4.3, 114: 4.5, 115: 4.3,
+    151: 4.7, 152: 4.6, 153: 4.2, 154: 4.8, 155: 4.3, 156: 4.5, 201: 4.8, 202: 4.8, 204: 4.8, 205: 4.2,
+    206: 4.8, 203: 4.8, 207: 4.6, 208: 4.2, 209: 4.5, 210: 4.2, 301: 4.7, 304: 4.4, 305: 4.5, 306: 4.6,
+    307: 4.4, 308: 4.7, 309: 4.3, 310: 4.8, 311: 4.5, 312: 4.7, 302: 4.8, 401: 4.4, 402: 4.3, 403: 4.8,
+    404: 4.8, 405: 4.8, 406: 4.5, 407: 4.6, 408: 4.3, 409: 4.7, 410: 4.9, 411: 4.3, 412: 4.8, 413: 4.2,
+    414: 4.8, 415: 4.5, 416: 4.7, 303: 4.8, 351: 4.7, 352: 4.6, 353: 4.6, 354: 4.7, 355: 4.8,
+}
+
 CATEGORIES = [("signature", "Signature"), ("coffee", "Kopi Susu"), ("black-coffee", "Kopi Hitam"), ("frappe", "Frappe"), ("non-coffee", "Non-kopi"), ("pastry", "Roti & Pastry"), ("dessert", "Kue & Dessert"), ("main", "Nasi & Lauk"), ("noodles", "Mie & Pasta"), ("snack", "Camilan"), ("beans", "Biji Kopi")]
 
 # Kategori minuman: menunya punya pilihan suhu, ukuran, dan tingkat gula.
@@ -338,7 +349,9 @@ def main():
         img, credit = image_for(slug, name, lambda: art(kind, **args))
         temps = temperatures_for(pid, cat)
         opts = f", options: {{ temperature: {json.dumps(temps)} }}" if temps else ""
-        lines.append(f'  {{ id: {pid}, category: "{cat}", name: {json.dumps(name)}, img: "{img}", price: {price}, description: {json.dumps(desc, ensure_ascii=False)}{opts}{credit_js(credit)} }},')
+        if pid not in RATINGS:
+            raise SystemExit(f"menu {pid} ({name}) belum punya rating di RATINGS")
+        lines.append(f'  {{ id: {pid}, category: "{cat}", name: {json.dumps(name)}, img: "{img}", price: {price}, rating: {RATINGS[pid]}, description: {json.dumps(desc, ensure_ascii=False)}{opts}{credit_js(credit)} }},')
     for pid, name, price, rating in BEANS:
         img, credit = image_for("beans-" + slugify(name), name)
         lines.append(f'  {{ id: {pid}, category: "beans", name: "{name}", img: "{img}", price: {price}, rating: {rating}, description: "Biji kopi 200 g."{credit_js(credit)} }},')
@@ -350,8 +363,9 @@ def main():
 // File ini dibuat oleh tools/build_menu.py. Untuk mengubah menu, ubah daftar
 // di skrip itu lalu jalankan ulang, atau sunting langsung di sini kalau hanya
 // mengganti harga. img adalah path di dalam public/img/; credit berisi
-// pemilik foto dan sumbernya (ditampilkan di bagian Kredit Foto). Menu
-// minuman punya options.temperature: suhu yang bisa dipilih.
+// pemilik foto dan sumbernya (ditampilkan di bagian Kredit Foto); rating
+// adalah nilai bintang 1-5 yang tampil di kartu menu. Menu minuman punya
+// options.temperature: suhu yang bisa dipilih.
 const categories = [
 {cats}
 ];

@@ -344,7 +344,7 @@
             </div>
             <div class="product-content">
               <h3 x-text="item.name"></h3>
-              <div class="product-stars">
+              <div class="product-stars" role="img" :aria-label="`Rating ${ratingText(item.rating)} dari 5`">
                 <template x-for="star in 5" :key="star">
                   <span class="star" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 24 24" class="star-outline">
@@ -353,7 +353,7 @@
                     <span
                       class="star-fill"
                       :style="{
-                        width: `${Math.max(0, Math.min(1, item.rating - star + 1)) * 100}%`
+                        width: `${starFill(item.rating, star) * 100}%`
                       }"
                     >
                       <svg width="24" height="24" viewBox="0 0 24 24">
@@ -362,6 +362,7 @@
                     </span>
                   </span>
                 </template>
+                <span class="product-rating-value" x-text="ratingText(item.rating)" aria-hidden="true"></span>
               </div>
               <div class="product-price">
                 <span x-text="rupiah(item.price)"></span>
@@ -438,7 +439,7 @@
           <img alt="" width="600" height="450" />
           <div class="product-content">
             <h3 id="item-detail-title"></h3>
-            <div class="product-stars"></div>
+            <div class="product-stars" role="img"></div>
             <p></p>
             <div class="drink-options" hidden></div>
             <div class="product-price"></div>

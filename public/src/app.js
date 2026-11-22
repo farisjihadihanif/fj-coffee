@@ -9,6 +9,14 @@ const rupiah = (number) =>
 // Membuat function rupiah dapat dipanggil dari expression AlpineJS di HTML.
 window.rupiah = rupiah;
 
+// Rating dengan koma desimal, misalnya 4,6.
+const ratingText = (rating) =>
+  Number(rating).toLocaleString("id-ID", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+window.ratingText = ratingText;
+
+// Bagian bintang ke-n (1-5) yang terisi, 0 sampai 1.
+window.starFill = (rating, star) => Math.max(0, Math.min(1, rating - star + 1));
+
 // Jalankan pendaftaran data setelah AlpineJS selesai dimuat.
 document.addEventListener("alpine:init", () => {
   // Katalog menu. Datanya diambil dari server (lib/catalog.js) supaya harga
