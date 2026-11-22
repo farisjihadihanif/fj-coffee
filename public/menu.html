@@ -151,7 +151,7 @@
 
     <!-- Checkout Modal Start -->
     <div class="payment-notification" id="payment-notification" role="status" aria-live="polite"></div>
-    <div class="checkout-modal" id="checkout-modal" aria-hidden="true">
+    <dialog class="checkout-modal" id="checkout-modal" aria-label="Pemesanan">
       <div class="checkout-modal-container" x-data data-keep-cart>
         <button type="button" class="checkout-close" aria-label="Tutup checkout">
           <i data-feather="x"></i>
@@ -249,7 +249,7 @@
           </section>
         </div>
       </div>
-    </div>
+    </dialog>
     <!-- Checkout Modal End -->
 
     <!-- Menu Page Start -->
@@ -347,13 +347,13 @@
     <!-- Menu Page End -->
 
     <!-- Modal Box Item Detail Start -->
-    <div class="modal" id="item-detail-modal">
+    <dialog class="modal" id="item-detail-modal" aria-labelledby="item-detail-title">
       <div class="modal-container">
         <a href="" class="close-icon" aria-label="Tutup"><i data-feather="x"></i></a>
         <div class="modal-content">
           <img src="img/logo.png" alt="" />
           <div class="product-content">
-            <h3></h3>
+            <h3 id="item-detail-title"></h3>
             <p></p>
             <div class="product-stars"></div>
             <div class="product-price"></div>
@@ -364,7 +364,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </dialog>
     <!-- Modal Box Item Detail End -->
 
     <!-- Footer Section Start -->

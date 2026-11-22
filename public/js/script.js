@@ -74,8 +74,10 @@ if (itemDetailModal) {
   const modalAddCartButton = itemDetailModal.querySelector(".modal-add-cart");
   let modalProduct = null;
 
+  // <dialog> dengan showModal(): Escape, fokus yang terkunci di dalam modal,
+  // dan kembalinya fokus ke pemicu ditangani browser.
   const closeModal = () => {
-    itemDetailModal.style.display = "none";
+    itemDetailModal.close();
   };
 
   // Gunakan event delegation karena kartu menu dibuat oleh AlpineJS x-for.
@@ -112,7 +114,7 @@ if (itemDetailModal) {
         }).join("")
       : "";
 
-    itemDetailModal.style.display = "flex";
+    itemDetailModal.showModal();
   });
 
   modalAddCartButton.onclick = (e) => {
@@ -126,13 +128,10 @@ if (itemDetailModal) {
     closeModal();
   };
 
+  // Klik di luar kotak modal (latar gelap) menutup modal.
   itemDetailModal.onclick = (e) => {
     if (e.target === itemDetailModal) closeModal();
   };
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeModal();
-  });
 }
 
 // ---------- Checkout dan pembayaran ----------
@@ -217,8 +216,38 @@ function escapeHtml(value) {
   );
 }
 
+// Modal <dialog> tampil di top layer, di atas semua z-index. Supaya
+// notifikasi tetap terlihat, taruh di dalam dialog yang sedang terbuka dan
+// kembalikan ke body saat dialog ditutup.
+for (const dialog of document.querySelectorAll("dialog")) {
+  dialog.addEventListener("close", () => document.body.append(paymentNotification));
+  dialog.addEventListener("keydown", (e) => trapFocus(e, dialog));
+}
+
+// showModal() mengunci fokus dari isi halaman, tapi Tab masih bisa keluar ke
+// bilah alamat browser. Putar fokus kembali ke elemen pertama atau terakhir.
+function trapFocus(e, dialog) {
+  if (e.key !== "Tab") return;
+  const focusable = [
+    ...dialog.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])',
+    ),
+  ].filter((el) => el.offsetParent !== null);
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
+}
+
 function showPaymentNotification(message, type) {
   window.clearTimeout(notificationTimer);
+  (document.querySelector("dialog[open]") || document.body).append(paymentNotification);
   paymentNotification.textContent = message;
   paymentNotification.className = `payment-notification ${type} visible`;
   notificationTimer = window.setTimeout(() => {
@@ -251,15 +280,13 @@ function showPaymentMethods() {
 }
 
 function openCheckoutModal() {
-  checkoutModal.classList.add("active");
-  checkoutModal.setAttribute("aria-hidden", "false");
+  if (!checkoutModal.open) checkoutModal.showModal();
   showPanel("form");
 }
 
 function closeCheckoutModal() {
   window.clearInterval(paymentStatusTimer);
-  checkoutModal.classList.remove("active");
-  checkoutModal.setAttribute("aria-hidden", "true");
+  if (checkoutModal.open) checkoutModal.close();
 }
 
 openCheckoutButton.onclick = (e) => {
@@ -286,6 +313,12 @@ closeCheckoutButton.onclick = dismissCheckout;
 checkoutModal.onclick = (e) => {
   if (e.target === checkoutModal) dismissCheckout();
 };
+// Escape memicu event cancel. Tangani sendiri supaya order yang masih
+// menunggu pembayaran ikut dibatalkan, sama seperti tombol X.
+checkoutModal.addEventListener("cancel", (e) => {
+  e.preventDefault();
+  dismissCheckout();
+});
 
 // Nomor meja hanya diperlukan untuk makan di tempat.
 function syncOrderType() {

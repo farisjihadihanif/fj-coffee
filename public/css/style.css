@@ -163,7 +163,26 @@ body {
   background: rgba(1, 1, 1, 0.75);
 }
 
-.checkout-modal.active {
+/* Kedua modal memakai <dialog>. Hapus gaya bawaan browser supaya dialog
+   menutupi layar dan latar gelapnya bisa diklik untuk menutup. */
+dialog.checkout-modal,
+dialog.modal {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  color: inherit;
+}
+
+dialog.checkout-modal::backdrop,
+dialog.modal::backdrop {
+  background: transparent;
+}
+
+.checkout-modal[open],
+.modal[open] {
   display: flex;
 }
 
