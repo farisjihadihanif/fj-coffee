@@ -1,0 +1,29 @@
+# Blueprint Render untuk FJ Coffee: satu web service gratis yang melayani
+# API (/api/...) dan file statis di public/. Langkah lengkapnya ada di
+# DEPLOY.md.
+services:
+  - type: web
+    name: fj-coffee
+    runtime: node
+    plan: free
+    # Paling dekat dengan pengguna di Indonesia.
+    region: singapore
+    branch: main
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    # Render menganggap deploy berhasil setelah alamat ini menjawab 200.
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "24.22.1"
+      - key: MIDTRANS_IS_PRODUCTION
+        value: "false"
+      # Rahasia: Render menanyakan nilainya saat Blueprint pertama kali
+      # dibuat. Jangan tulis nilainya di file ini.
+      - key: MIDTRANS_SERVER_KEY
+        sync: false
+      - key: MIDTRANS_CLIENT_KEY
+        sync: false
+# PORT, RENDER, dan RENDER_EXTERNAL_URL diisi Render sendiri. server.js
+# memakai RENDER untuk trust proxy dan RENDER_EXTERNAL_URL sebagai alamat
+# publik, jadi TRUST_PROXY dan PUBLIC_URL tidak perlu diisi.

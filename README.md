@@ -56,11 +56,11 @@ Jenis pesanan dan nomor meja dikirim ke Midtrans sebagai `custom_field1`, dan ca
 
 ## Deploy
 
-Proyek ini butuh hosting yang menjalankan Node.js (misalnya Render, Railway, atau Koyeb), bukan hosting statis.
+Proyek ini butuh hosting yang menjalankan Node.js (misalnya Render, Railway, atau Koyeb), bukan hosting statis. Panduan lengkap untuk paket gratis Render (dengan `render.yaml`) ada di [DEPLOY.md](DEPLOY.md). Ringkasnya, untuk hosting apa pun:
 
 1. Unggah kode ke repositori Git. File `.env` tidak ikut karena ada di `.gitignore`.
 2. Buat web service baru: build command `npm install`, start command `npm start`.
-3. Isi environment variable `MIDTRANS_SERVER_KEY`, `MIDTRANS_CLIENT_KEY`, dan `MIDTRANS_IS_PRODUCTION`. Di Render dan Railway, proxy dikenali otomatis. Di hosting lain yang memakai proxy, isi juga `TRUST_PROXY=1` supaya rate limit membaca IP pengunjung yang benar.
+3. Isi environment variable `MIDTRANS_SERVER_KEY`, `MIDTRANS_CLIENT_KEY`, dan `MIDTRANS_IS_PRODUCTION`. Di Render dan Railway, proxy dikenali otomatis. Di hosting lain yang memakai proxy, isi juga `TRUST_PROXY=1` supaya rate limit membaca IP pengunjung yang benar. Isi `PUBLIC_URL` dengan alamat situs (di Render sudah otomatis) supaya pembayaran hanya bisa dibuat dari situs itu. Health check ada di `/healthz`.
 4. Di dashboard Midtrans, isi Payment Notification URL dengan `https://domain-kamu/api/midtrans/notification`.
 5. Aktifkan metode pembayaran yang dipakai (QRIS, GoPay, BCA, BNI, BRI, Mandiri) di dashboard Midtrans.
 
