@@ -2979,10 +2979,56 @@ html:not(.timeline-ready) .timeline-dot {
   color: var(--bg);
 }
 
-/* Tombol keranjang melayang di kanan bawah. Beri ruang di bawah footer
-   supaya teksnya tidak tertutup. */
+/* Footer ringkas: ikon, tautan, dan kredit dalam satu kolom rapat. */
 footer {
-  padding-bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 32px;
+  padding: 20px 16px 18px;
+}
+
+footer .socials {
+  display: flex;
+  gap: 18px;
+  padding: 0;
+}
+
+footer .socials a {
+  margin: 0;
+}
+
+footer .links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px 20px;
+  margin: 0;
+}
+
+footer .links a {
+  padding: 4px 0;
+}
+
+footer .credit {
+  gap: 2px 16px;
+  padding: 0;
+}
+
+/* Kontak adalah bagian terakhir sebelum footer: tanpa margin tambahan. */
+.contact {
+  margin-bottom: 0;
+  padding-bottom: 8px;
+}
+
+/* Tombol keranjang melayang di kanan bawah. Di layar sempit teks footer bisa
+   sampai ke bawah tombol, jadi sisakan ruang setinggi tombol dan jaraknya
+   dari tepi bawah. Di layar lebar tombol berada di luar kolom teks. */
+@media (max-width: 1099px) {
+  footer {
+    padding-bottom: calc(3.5rem + 1.5rem + 8px);
+  }
 }
 
 /* Tautan kecil ke halaman kredit foto di footer. */
