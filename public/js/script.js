@@ -688,3 +688,24 @@ async function cancelPayment() {
 
 // Alpine dimuat dengan defer, jadi tunggu sampai store-nya siap.
 document.addEventListener("alpine:initialized", resumePendingPayment);
+
+// Bagian bertanda data-reveal muncul berurutan saat pertama kali terlihat.
+// Dilewati kalau pengguna memilih mengurangi animasi.
+(() => {
+  const targets = document.querySelectorAll("[data-reveal]");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!targets.length || reduceMotion || !("IntersectionObserver" in window)) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add("is-revealed");
+        observer.unobserve(entry.target);
+      }
+    },
+    { threshold: 0.25 },
+  );
+  document.documentElement.classList.add("reveal-ready");
+  targets.forEach((target) => observer.observe(target));
+})();

@@ -1752,30 +1752,86 @@ input:focus-visible {
   line-height: 1.5;
 }
 
-/* Kontak */
+/* Kontak: satu kolom, alamat, jam buka, lalu kontak. */
 .contact-info {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  gap: 1.5rem;
-  max-width: 60rem;
-  margin: 3rem auto 0;
+  width: min(100%, 34rem);
+  margin: 2.5rem auto 0;
+  list-style: none;
+  text-align: left;
 }
 
-.contact-info > div {
-  padding: 1.5rem;
-  border: 1px solid #333;
-  border-radius: 0.6rem;
+.contact-info li {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 4px;
+  border-top: 1px solid rgba(182, 137, 91, 0.25);
+}
+
+.contact-info li:last-child {
+  border-bottom: 1px solid rgba(182, 137, 91, 0.25);
+}
+
+.contact-icon {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .contact-info h3 {
-  font-size: 1.2rem;
+  margin-bottom: 2px;
   color: var(--primary);
-  margin-bottom: 0.4rem;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.contact .contact-info p {
+  max-width: none;
+  margin: 0;
+  text-align: left;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 .contact-info a {
   color: #fff;
   text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Muncul berurutan dari atas saat digulir ke layar. Kelas reveal-ready
+   dipasang oleh script.js, jadi tanpa JS isinya langsung tampil. */
+.reveal-ready [data-reveal] > * {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+
+.reveal-ready [data-reveal].is-revealed > * {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.reveal-ready [data-reveal].is-revealed > :nth-child(2) {
+  transition-delay: 0.12s;
+}
+
+.reveal-ready [data-reveal].is-revealed > :nth-child(3) {
+  transition-delay: 0.24s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-ready [data-reveal] > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 @media (max-width: 450px) {
