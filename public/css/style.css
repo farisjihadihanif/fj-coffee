@@ -419,7 +419,7 @@ dialog.modal::backdrop {
   font-size: 1.6rem;
   margin-top: 1rem;
   line-height: 1.4;
-  font-weight: 100;
+  font-weight: 400;
   text-shadow: 1px 1px 3px rgba(1, 1, 1, 0.5);
   mix-blend-mode: difference;
 }
@@ -787,7 +787,7 @@ dialog.modal::backdrop {
 .about .row .content p {
   margin-bottom: 0.8rem;
   font-size: 1.4rem;
-  font-weight: 100;
+  font-weight: 400;
   line-height: 1.6;
 }
 
@@ -802,7 +802,7 @@ dialog.modal::backdrop {
   max-width: 30rem;
   margin: auto;
   font-size: 1rem;
-  font-weight: 100;
+  font-weight: 400;
   line-height: 1.6;
 }
 
