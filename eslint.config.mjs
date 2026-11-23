@@ -9,7 +9,7 @@ export default defineConfig([
 
   // Server, tes, dan skrip: Node.js dengan CommonJS.
   {
-    files: ["server.js", "lib/**/*.js", "test/**/*.js"],
+    files: ["server.js", "api/**/*.js", "lib/**/*.js", "test/**/*.js"],
     languageOptions: {
       sourceType: "commonjs",
       globals: globals.node,
