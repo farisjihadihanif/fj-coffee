@@ -23,15 +23,15 @@ npm run lint   # memeriksa kode dengan ESLint
 
 ## Struktur
 
-| Lokasi | Isi |
-|---|---|
-| `public/` | Halaman utama (`index.html`), halaman menu (`menu.html`), CSS, JavaScript, dan gambar. Hanya folder ini yang bisa diakses browser. |
-| `lib/catalog.js` | Daftar menu, kategori, harga, dan pajak. |
-| `tools/build_menu.py` | Membuat ulang `lib/catalog.js` dari satu daftar menu, lengkap dengan path foto dan kreditnya. |
-| `lib/pricing.js` | Perhitungan total dan validasi data pemesan. |
-| `lib/app.js` | Endpoint API dan integrasi Midtrans. |
-| `server.js` | Membaca `.env` dan menjalankan server. |
-| `test/` | Tes otomatis. |
+| Lokasi                | Isi                                                                                                                                |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `public/`             | Halaman utama (`index.html`), halaman menu (`menu.html`), CSS, JavaScript, dan gambar. Hanya folder ini yang bisa diakses browser. |
+| `lib/catalog.js`      | Daftar menu, kategori, harga, dan pajak.                                                                                           |
+| `tools/build_menu.py` | Membuat ulang `lib/catalog.js` dari satu daftar menu, lengkap dengan path foto dan kreditnya.                                      |
+| `lib/pricing.js`      | Perhitungan total dan validasi data pemesan.                                                                                       |
+| `lib/app.js`          | Endpoint API dan integrasi Midtrans.                                                                                               |
+| `server.js`           | Membaca `.env` dan menjalankan server.                                                                                             |
+| `test/`               | Tes otomatis.                                                                                                                      |
 
 ## Menu dan gambar
 
@@ -68,3 +68,13 @@ Proyek ini butuh hosting yang menjalankan Node.js (misalnya Render, Railway, ata
 
 - Belum ada database dan halaman kasir. Pesanan yang sudah dibayar hanya terlihat di dashboard Midtrans.
 - Kafe ini fiktif. Alamat dan jam buka di bagian Kontak hanya contoh.
+
+## Copyright
+
+© 2026 Faris Jihadi Hanif Lubis. All rights reserved.
+
+This repository is public for portfolio and review purposes only. No license is granted: you may view the code, but you may not copy, modify, redistribute, or use it in other projects without my written permission.
+
+Repositori ini dipublikasikan hanya untuk keperluan portofolio. Kode boleh dilihat, tetapi tidak boleh disalin, diubah, disebarkan, atau digunakan tanpa izin tertulis dari saya.
+
+Contact: [LinkedIn](https://www.linkedin.com/in/faris-jihadi-hanif-lubis-62337a286/)
