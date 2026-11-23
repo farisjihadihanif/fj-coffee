@@ -6,6 +6,11 @@ Katalog menu kafe dengan pemesanan dan pembayaran online. Pengunjung memilih men
 
 Tampilan dasarnya berasal dari tutorial [Kedai Kopi Kenangan Senja](https://github.com/sandhikagalih/kedai-kopi-kenangan-senja) oleh Sandhika Galih. Yang dikembangkan di proyek ini: katalog menu berbasis data, keranjang, alur pemesanan kafe, server Express, dan integrasi Midtrans.
 
+## Website
+
+Visit the Deployment Website:
+https://fj-coffee.vercel.app/
+
 ## Menjalankan
 
 ```bash
@@ -30,9 +35,7 @@ npm run lint   # memeriksa kode dengan ESLint
 | `tools/build_menu.py` | Membuat ulang `lib/catalog.js` dari satu daftar menu, lengkap dengan path foto dan kreditnya.                                      |
 | `lib/pricing.js`      | Perhitungan total dan validasi data pemesan.                                                                                       |
 | `lib/app.js`          | Endpoint API dan integrasi Midtrans.                                                                                               |
-| `lib/config.js`       | Membaca pengaturan dari environment (key Midtrans, proxy, alamat situs).                                                           |
-| `server.js`           | Membaca `.env` dan menjalankan server (lokal, Render).                                                                             |
-| `api/index.js`        | Pintu masuk serverless untuk Vercel (aplikasi yang sama, tanpa `app.listen`).                                                      |
+| `server.js`           | Membaca `.env` dan menjalankan server.                                                                                             |
 | `test/`               | Tes otomatis.                                                                                                                      |
 
 ## Menu dan gambar
@@ -58,20 +61,7 @@ Jenis pesanan dan nomor meja dikirim ke Midtrans sebagai `custom_field1`, dan ca
 
 ## Deploy
 
-Ada dua pilihan gratis:
-
-### Vercel (tanpa kartu, tidak tidur)
-
-Halaman di `public/` dilayani CDN Vercel, sedangkan `/api/*` dan `/healthz` dijalankan `api/index.js` sebagai serverless function (lihat `vercel.json`). Aplikasi ini tidak menyimpan data di memori antar-request, jadi cocok untuk serverless.
-
-1. Di vercel.com: **Add New → Project**, impor repositori ini. Framework Preset: **Other**, tanpa build command.
-2. Isi environment variable `MIDTRANS_SERVER_KEY`, `MIDTRANS_CLIENT_KEY`, dan `MIDTRANS_IS_PRODUCTION`. Domain situs dan proxy dikenali otomatis, jadi `PUBLIC_URL` dan `TRUST_PROXY` tidak perlu diisi (kecuali memakai domain sendiri).
-3. Deploy, lalu buka `https://domain-kamu/healthz`.
-4. Lanjutkan ke langkah 4 dan 5 di bawah (Midtrans).
-
-### Render atau hosting Node.js lain
-
-Render, Railway, atau Koyeb menjalankan `server.js` sebagai server biasa (paket gratis Render tidur setelah 15 menit tanpa pengunjung dan sekarang meminta verifikasi kartu). Blueprint-nya ada di `render.yaml`. Langkahnya:
+Proyek ini butuh hosting yang menjalankan Node.js (misalnya Render, Railway, atau Koyeb), bukan hosting statis. Panduan lengkap untuk paket gratis Render (dengan `render.yaml`) ada di [DEPLOY.md](DEPLOY.md). Ringkasnya, untuk hosting apa pun:
 
 1. Unggah kode ke repositori Git. File `.env` tidak ikut karena ada di `.gitignore`.
 2. Buat web service baru: build command `npm install`, start command `npm start`.
