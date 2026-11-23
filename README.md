@@ -11,21 +11,6 @@ Tampilan dasarnya berasal dari tutorial [Kedai Kopi Kenangan Senja](https://gith
 Visit the Deployment Website:
 https://fj-coffee.vercel.app/
 
-## Menjalankan
-
-```bash
-npm install
-cp .env.example .env   # lalu isi key Midtrans
-npm start
-```
-
-Buka http://localhost:3000. Tanpa key Midtrans situs tetap tampil, tetapi checkout dinonaktifkan.
-
-```bash
-npm test       # menguji server dengan Midtrans tiruan, tidak butuh key
-npm run lint   # memeriksa kode dengan ESLint
-```
-
 ## Struktur
 
 | Lokasi                | Isi                                                                                                                                |
@@ -58,16 +43,6 @@ Navbar, keranjang, dan form checkout ditulis dua kali, di `index.html` dan `menu
 4. Midtrans juga mengirim notifikasi ke `POST /api/midtrans/notification`, yang diverifikasi dengan signature key.
 
 Jenis pesanan dan nomor meja dikirim ke Midtrans sebagai `custom_field1`, dan catatan sebagai `custom_field2`, sehingga terlihat di detail transaksi pada dashboard Midtrans.
-
-## Deploy
-
-Proyek ini butuh hosting yang menjalankan Node.js (misalnya Render, Railway, atau Koyeb), bukan hosting statis. Panduan lengkap untuk paket gratis Render (dengan `render.yaml`) ada di [DEPLOY.md](DEPLOY.md). Ringkasnya, untuk hosting apa pun:
-
-1. Unggah kode ke repositori Git. File `.env` tidak ikut karena ada di `.gitignore`.
-2. Buat web service baru: build command `npm install`, start command `npm start`.
-3. Isi environment variable `MIDTRANS_SERVER_KEY`, `MIDTRANS_CLIENT_KEY`, dan `MIDTRANS_IS_PRODUCTION`. Di Render dan Railway, proxy dikenali otomatis. Di hosting lain yang memakai proxy, isi juga `TRUST_PROXY=1` supaya rate limit membaca IP pengunjung yang benar. Isi `PUBLIC_URL` dengan alamat situs (di Render sudah otomatis) supaya pembayaran hanya bisa dibuat dari situs itu. Health check ada di `/healthz`.
-4. Di dashboard Midtrans, isi Payment Notification URL dengan `https://domain-kamu/api/midtrans/notification`.
-5. Aktifkan metode pembayaran yang dipakai (QRIS, GoPay, BCA, BNI, BRI, Mandiri) di dashboard Midtrans.
 
 ## Batasan
 
