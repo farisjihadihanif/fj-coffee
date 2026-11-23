@@ -16,7 +16,11 @@
   text-decoration: none;
 }
 
+/* Ukuran dasar 75% (1rem = 12px) di semua layar lebar, sama dengan
+   tampilan laptop 1366px. Tanpa ini, layar di atas 1366px memakai 16px dan
+   semua ukuran rem (termasuk modal menu) jadi sepertiga lebih besar. */
 html {
+  font-size: 75%;
   scroll-behavior: smooth;
   scroll-padding-top: 7rem;
 }
@@ -1351,13 +1355,6 @@ footer .credit a {
 }
 
 /* Media Queries */
-
-/* Laptop */
-@media (max-width: 1366px) {
-  html {
-    font-size: 75%;
-  }
-}
 
 /* Tablet */
 @media (max-width: 768px) {
