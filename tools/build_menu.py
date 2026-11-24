@@ -446,6 +446,8 @@ def credits_page(entries):
 
 {chr(10).join(groups)}
     </main>
+
+    <script src="js/motion.js"></script>
   </body>
 </html>
 """

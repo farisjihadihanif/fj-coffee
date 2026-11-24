@@ -308,6 +308,7 @@
           @keydown.tab="hide(false)"
           @keydown="jump($event)"
         >
+          <li class="cat-select-indicator" role="presentation" :style="{ '--active': active }"></li>
           <template x-for="(option, index) in options" :key="option.id">
             <li
               role="option"
@@ -435,6 +436,7 @@
 
     <!-- JavaScript -->
     <script src="js/script.js"></script>
+    <script src="js/motion.js"></script>
 
   </body>
 </html>

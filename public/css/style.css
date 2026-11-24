@@ -87,11 +87,12 @@ body {
   padding-bottom: 0.5rem;
   border-bottom: 0.1rem solid var(--primary);
   transform: scaleX(0);
+  transform-origin: left;
   transition: transform var(--hover-move) var(--hover-ease);
 }
 
 .navbar .navbar-nav a:hover::after {
-  transform: scaleX(0.5);
+  transform: scaleX(1);
 }
 
 .navbar .navbar-extra a {
@@ -970,7 +971,6 @@ dialog.modal::backdrop {
   text-align: center;
   border: 1px solid #333;
   border-radius: 1rem;
-  overflow: hidden;
   background: #120d09;
 }
 
@@ -979,11 +979,13 @@ dialog.modal::backdrop {
   height: 100%;
 }
 
-/* Foto mengisi lebar kartu (4:3) dan ikut sudut kartu lewat overflow
-   hidden. Tombol keranjang dan detail menumpang di pojok kanan bawah foto. */
+/* Foto mengisi lebar kartu (4:3) dan dipotong mengikuti sudut
+   kartu. Tombol keranjang dan detail menumpang di pojok kanan bawah foto. */
 .products .product-image {
   position: relative;
   aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: calc(1rem - 1px) calc(1rem - 1px) 0 0;
   background: #1b140e;
 }
 
@@ -1404,10 +1406,6 @@ footer .credit a {
     margin: 1.5rem;
     padding: 0.5rem;
     font-size: 2rem;
-  }
-
-  .navbar .navbar-nav a::after {
-    transform-origin: 0 0;
   }
 
   .navbar .navbar-nav a:hover::after {
@@ -2046,7 +2044,8 @@ html:not(.timeline-ready) .timeline-dot {
 .timeline-ready .timeline-step.is-revealed .timeline-icon {
   opacity: 1;
   transform: none;
-  transition: opacity 0.5s ease-out var(--delay, 0s), transform 0.5s ease-out var(--delay, 0s);
+  transition: opacity 0.5s ease-out var(--delay, 0s), transform 0.5s ease-out var(--delay, 0s),
+    translate var(--hover-move) var(--hover-ease), scale var(--hover-move) var(--hover-ease);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2138,7 +2137,6 @@ html:not(.timeline-ready) .timeline-dot {
   flex-direction: column;
   border: 1px solid #333;
   border-radius: 1rem;
-  overflow: hidden;
   background: #120d09;
 }
 
@@ -2342,6 +2340,8 @@ html:not(.timeline-ready) .timeline-dot {
   display: block;
   width: 100%;
   padding: 0;
+  overflow: hidden;
+  border-radius: calc(1rem - 1px) calc(1rem - 1px) 0 0;
   background: transparent;
   cursor: pointer;
 }
@@ -2462,10 +2462,13 @@ html:not(.timeline-ready) .timeline-dot {
 }
 
 .cat-select-list li {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
+  height: 44px;
+  padding: 0 12px;
+  white-space: nowrap;
   border-radius: 8px;
   color: #e9dccd;
   font-size: 15px;
@@ -2478,8 +2481,19 @@ html:not(.timeline-ready) .timeline-dot {
 }
 
 .cat-select-list li.active {
-  background: rgba(182, 137, 91, 0.2);
   color: #fff;
+}
+
+/* Penanda opsi aktif: satu kotak yang bergeser di belakang daftar. */
+.cat-select-list .cat-select-indicator {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  background: rgba(182, 137, 91, 0.2);
+  pointer-events: none;
+  transform: translateY(calc(var(--active, 0) * 100%));
+  transition: transform var(--hover-color) var(--hover-ease);
 }
 
 .cat-select-check {
@@ -2610,12 +2624,12 @@ html:not(.timeline-ready) .timeline-dot {
     transparent
   );
   transform: skewX(-20deg);
-  transition: left var(--hover-sheen) var(--hover-ease);
+  transition: transform var(--hover-sheen) var(--hover-ease);
 }
 
 .hero .hero-cta:hover,
 .hero .hero-cta:focus-visible {
-  --cta-lift: -3px;
+  --cta-lift: -2px;
   --cta-scale: 1.03;
   background-color: #c79a6a;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 0 6px rgba(182, 137, 91, 0.25);
@@ -2623,7 +2637,7 @@ html:not(.timeline-ready) .timeline-dot {
 
 .hero .hero-cta:hover::before,
 .hero .hero-cta:focus-visible::before {
-  left: 130%;
+  transform: translateX(410%) skewX(-20deg);
 }
 
 .hero .hero-cta:hover svg,
@@ -3367,6 +3381,193 @@ button:active,
 
 @media (prefers-reduced-motion: reduce) {
   .navbar .navbar-nav a::after {
+    transition: none;
+  }
+}
+
+/* ===== Animasi ===== */
+/* Hover memakai properti translate dan scale, bukan transform, supaya tidak
+   bentrok dengan animasi muncul yang memakai transform. Bayangan dibuat di
+   ::after dan hanya opacity-nya yang berubah, jadi tetap ringan. */
+:is(.menu-tile, .product-card, .timeline-card),
+:is(.menu-item-add, .products-more, .modal-add-cart, .checkout-button, .copy-button, .payment-method,
+  .change-payment-button, .cancel-payment-button, .timeline-links a, .product-icons a) {
+  position: relative;
+}
+
+:is(.menu-tile, .product-card, .timeline-card)::after,
+:is(.menu-item-add, .products-more, .modal-add-cart, .checkout-button, .copy-button, .payment-method,
+  .change-payment-button, .cancel-payment-button, .timeline-links a, .product-icons a)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--hover-move) var(--hover-ease);
+}
+
+/* Latar situs hitam, jadi bayangan memakai warna kopi. */
+:is(.menu-tile, .product-card, .timeline-card)::after {
+  inset: -1px;
+  box-shadow: 0 0 0 1px rgba(182, 137, 91, 0.4), 0 14px 34px rgba(182, 137, 91, 0.26);
+}
+
+:is(.menu-item-add, .products-more, .modal-add-cart, .checkout-button, .copy-button, .payment-method,
+  .change-payment-button, .cancel-payment-button, .timeline-links a, .product-icons a)::after {
+  box-shadow: 0 6px 16px rgba(182, 137, 91, 0.45);
+}
+
+/* Garis bawah tautan tumbuh dari kiri ke kanan. */
+:is(footer .links a, footer .credit a, .products > p a, .demo-badge a, .credits-back, .credits a) {
+  position: relative;
+  display: inline-block;
+}
+
+:is(footer .links a, footer .credit a, .products > p a, .demo-badge a, .credits-back, .credits a)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .menu-tile,
+  .product-card {
+    transition: translate var(--hover-move) var(--hover-ease);
+  }
+
+  :is(.menu-tile-open, .product-image) img,
+  :is(.navbar-extra > a, .socials a, .demo-chip, .demo-badge-close, .close-icon, .checkout-close,
+  .qty-step, .remove-cart-item, .modal-add-cart, .timeline-links a, .product-icons a) svg {
+    transition: scale var(--hover-move) var(--hover-ease);
+  }
+
+  .products .products-more .products-more-count {
+    transition: var(--hover-color-transition), scale var(--hover-move) var(--hover-ease);
+  }
+
+  :is(.menu-item-add, .products-more, .modal-add-cart, .checkout-button, .copy-button, .payment-method,
+  .change-payment-button, .cancel-payment-button, .timeline-links a, .product-icons a):is(a, button),
+  .products :is(.products-more, .product-icons a),
+  .modal .modal-add-cart {
+    transition: var(--hover-color-transition), translate var(--hover-move) var(--hover-ease),
+      scale var(--hover-move) var(--hover-ease);
+  }
+
+  :is(footer .links a, footer .credit a, .products > p a, .demo-badge a, .credits-back, .credits a)::after {
+    transition: transform var(--hover-move) var(--hover-ease);
+  }
+
+  :is(.menu-item-add, .products-more, .modal-add-cart, .checkout-button, .copy-button, .payment-method,
+  .change-payment-button, .cancel-payment-button, .timeline-links a, .product-icons a):active:not(:disabled) {
+    scale: 0.97;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :is(.menu-tile, .product-card, .timeline-card):hover::after,
+  :is(.menu-item-add, .products-more, .modal-add-cart, .checkout-button, .copy-button, .payment-method,
+  .change-payment-button, .cancel-payment-button, .timeline-links a, .product-icons a):hover:not(:disabled)::after {
+    opacity: 1;
+  }
+
+  :is(footer .links a, footer .credit a, .products > p a, .demo-badge a, .credits-back, .credits a):hover::after {
+    transform: scaleX(1);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  :is(.menu-tile, .product-card, .timeline-card):hover {
+    translate: 0 -4px;
+  }
+
+  /* Menutup celah di bawah kartu dan tombol yang terangkat, supaya hover
+     tidak lepas-sambung saat kursor berada di tepi bawahnya. */
+  :is(.menu-tile, .product-card, .timeline-card):hover::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 5px;
+  }
+
+  :is(.menu-item-add, .products-more, .modal-add-cart, .checkout-button, .copy-button, .payment-method,
+  .change-payment-button, .cancel-payment-button, .timeline-links a, .product-icons a):hover:not(:disabled)::after {
+    bottom: -2px;
+    pointer-events: auto;
+  }
+
+  :is(.menu-item-add, .products-more, .modal-add-cart, .checkout-button, .copy-button, .payment-method,
+  .change-payment-button, .cancel-payment-button, .timeline-links a, .product-icons a):hover:not(:disabled) {
+    translate: 0 -2px;
+  }
+
+  .menu-tile:hover .menu-tile-open img,
+  .product-card:hover .product-image img {
+    scale: 1.05;
+  }
+
+  :is(.navbar-extra > a, .socials a, .demo-chip, .demo-badge-close, .close-icon, .checkout-close,
+  .qty-step, .remove-cart-item, .modal-add-cart, .timeline-links a, .product-icons a):hover:not(:disabled) svg,
+  .products-more:hover .products-more-count,
+  .timeline-step:hover .timeline-icon {
+    scale: 1.1;
+  }
+}
+
+/* Muncul saat digulir. Kelas dipasang dan dilepas oleh js/motion.js, hanya
+   untuk elemen yang masih di bawah layar. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .reveal-side {
+    transform: translateX(-40px);
+  }
+
+  .reveal-in {
+    animation: reveal-in 600ms var(--hover-ease) var(--reveal-delay, 0ms) both;
+  }
+
+  /* Judul hero. Mulai samar, bukan kosong, supaya tetap terlihat sejak awal. */
+  .hero .content h1 {
+    animation: hero-in 900ms var(--hover-ease);
+  }
+}
+
+@keyframes reveal-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0.2;
+    transform: translateY(16px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .navbar .navbar-nav,
+  .navbar .search-form.active,
+  .shopping-cart,
+  .payment-notification,
+  .cat-select-list .cat-select-indicator {
     transition: none;
   }
 }
